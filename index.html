@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PZX Arena</title>
+    <!-- Modern Tech Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Google Sign-In SDK -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <style>
+        :root {
+            --bg-color: #0B0F19;
+            --card-bg: rgba(22, 31, 49, 0.85);
+            --card-border: #1E293B;
+            --accent: #38BDF8;
+            --accent-glow: rgba(56, 189, 248, 0.35);
+            --gold: #F59E0B;
+            --text-main: #F8FAFC;
+            --text-sub: #94A3B8;
+            --danger: #EF4444;
+            --success: #10B981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 10% 10%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(245, 158, 11, 0.05) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* HEADER */
+        header {
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent);
+            font-size: 1.8rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .menu-btn:hover {
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #38BDF8, #818CF8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px var(--accent-glow);
+            text-transform: uppercase;
+        }
+
+        /* SIDE NAVIGATION MENU DRAWER */
+        .drawer-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 998;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .drawer-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer {
+            position: fixed;
+            top: 0; left: -300px;
+            width: 280px;
+            height: 100%;
+            background: #0F172A;
+            border-right: 1px solid var(--card-border);
+            z-index: 999;
+            transition: left 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 1rem;
+        }
+
+        .drawer.active {
+            left: 0;
+        }
+
+        .drawer h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .drawer-nav button {
+            width: 100%;
+            text-align: left;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.4rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .drawer-nav button:hover {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent);
+        }
+
+        /* TOP NAVIGATION TABS */
+        nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        nav button {
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        nav button:hover, nav button.active {
+            color: #FFF;
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        /* USER PROFILE HEADER AVATAR */
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), #0284C7);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            object-fit: cover;
+            border: 2px solid var(--accent);
+        }
+
+        /* BUTTONS */
+        .btn {
+            background: linear-gradient(135deg, var(--accent), #0284C7);
+            color: #000;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #EF4444, #B91C1C);
+            color: #FFF;
+            box-shadow: none;
+        }
+
+        /* MAIN CONTAINER */
+        main {
+            flex: 1;
+            max-width: 850px;
+            width: 100%;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+        }
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* CARDS */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+            position: relative;
+        }
+
+        .card h2, .card h3 {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        input, textarea, select {
+            background: #0F172A;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* QUIZ OPTIONS */
+        .quiz-options {
+            display: grid;
+            gap: 0.75rem;
+            margin: 1.2rem 0;
+        }
+
+        .option-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.08);
+        }
+
+        .option-btn.selected {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.2);
+        }
+
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.9; }
+
+        .news-img {
+            width: 100%;
+            max-height: 380px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid var(--card-border);
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-admin { background: var(--gold); color: #000; }
+        .badge-success { background: rgba(16, 185, 129, 0.2); color: var(--success); border: 1px solid var(--success); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.9rem;
+        }
+
+        th { color: var(--accent); font-family: 'Rajdhani', sans-serif; font-size: 1rem; }
+
+        .tab-group {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .tab-group label {
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* GRID & MATCH BOARD UI */
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .match-display-board {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .match-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed var(--card-border);
+            padding: 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .match-row:last-child {
+            border-bottom: none;
+        }
+
+        .match-label {
+            color: var(--text-sub);
+            font-weight: 500;
+        }
+
+        .match-val {
+            font-weight: 600;
+            text-align: right;
+            color: var(--text-main);
+        }
+
+        .winner-highlight {
+            color: var(--success);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OVERLAY & SIDE DRAWER MENU -->
+    <div class="drawer-overlay" id="drawer-overlay" onclick="toggleMenu()"></div>
+    <div class="drawer" id="drawer">
+        <h3>PZX ARENA</h3>
+        <div class="drawer-nav">
+            <button onclick="navigateFromDrawer('leaderboard-page')">🏆 Leaderboard</button>
+            <button onclick="navigateFromDrawer('about-page')">ℹ️ About Us</button>
+            <button onclick="navigateFromDrawer('rewards-page')">🎁 Rewards</button>
+            <button onclick="navigateFromDrawer('profile-page')">👤 My Profile</button>
+            <button onclick="logout()" style="color: var(--danger); margin-top: auto;">🚪 Logout</button>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleMenu()" title="Open Menu">☰</button>
+            <div class="logo">PZX ARENA</div>
+        </div>
+
+        <nav id="navbar" style="display: none;">
+            <button onclick="showPage('quizzes-page')" class="active">Quizzes</button>
+            <button onclick="showPage('cricket-page')">Cricket</button>
+            <button onclick="showPage('winners-page')">Winners</button>
+            <button id="admin-nav" onclick="showPage('admin-page')" style="display:none; color: var(--gold);">Admin</button>
+        </nav>
+
+        <div id="auth-status"></div>
+    </header>
+
+    <main>
+        <!-- AUTH GATE -->
+        <section id="auth-page" class="page active">
+            <div class="card" style="max-width: 420px; margin: 2rem auto;">
+                <h2 id="auth-title" style="text-align: center; font-size: 1.8rem;">Welcome Champ!</h2>
+                <p style="text-align: center; color: var(--text-sub); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    Sign in with your verified Google Account or Email.
+                </p>
+
+                <!-- GOOGLE SIGN IN BUTTON CONTAINER -->
+                <div id="g_id_onload"
+                     data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+                     data-callback="handleGoogleSignIn"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" data-type="standard" data-size="large" data-theme="dark" data-width="100%" style="margin-bottom: 1rem;"></div>
+
+                <div style="text-align:center; color:var(--text-sub); margin: 0.5rem 0; font-size:0.85rem;">— OR USE EMAIL —</div>
+
+                <form id="auth-form" onsubmit="handleAuth(event)">
+                    <input type="text" id="auth-username" placeholder="Username" required>
+                    <input type="email" id="auth-email" placeholder="Gmail Address (@gmail.com)" required>
+                    <input type="password" id="auth-password" placeholder="Password" required>
+                    <button type="submit" class="btn" id="auth-btn">Login</button>
+                </form>
+                <p style="margin-top: 1.5rem; font-size: 0.9rem; text-align: center; color: var(--text-sub);">
+                    <span id="auth-toggle-text">Need an account?</span> 
+                    <a href="#" onclick="toggleAuthMode()" style="color: var(--accent); font-weight: 600; text-decoration: none;" id="auth-toggle-link">Sign Up</a>
+                </p>
+            </div>
+        </section>
+
+        <!-- QUIZZES PAGE -->
+        <section id="quizzes-page" class="page">
+            <h2>Active Arena Quizzes</h2>
+            <div id="quiz-list"></div>
+        </section>
+
+        <!-- CRICKET PAGE -->
+        <section id="cricket-page" class="page">
+            <h2>Cricket Updates</h2>
+
+            <!-- MATCH RESULT DISPLAY BOARD -->
+            <div class="card">
+                <h3>Latest Match Overview</h3>
+                <div class="match-display-board">
+                    <span class="badge badge-success" style="margin-bottom: 0.8rem; display: inline-block;">LATEST ARENA RESULT</span>
+                    
+                    <div class="match-row">
+                        <span class="match-label">Matchup:</span>
+                        <span class="match-val" id="dispTeams">No Match Uploaded</span>
+                    </div>
+                    <div class="match-row">
+                        <span class="match-label">Toss Won By:</span>
+                        <span class="match-val" id="dispToss">-</span>
+                    </div>
+                    <div class="match-row">
+                        <span class="match-label">Match Winner:</span>
+                        <span class="match-val winner-highlight" id="dispWinner">-</span>
+                    </div>
+                    <div class="match-row">
+                        <span class="match-label">Player of the Match:</span>
+                        <span class="match-val" id="dispPOTM">-</span>
+                    </div>
+                    
+                    <h4 style="color: var(--accent); font-family:'Rajdhani', sans-serif; margin-top: 1rem; margin-bottom:0.5rem;">TOP PERFORMERS</h4>
+                    
+                    <div class="match-row">
+                        <span class="match-label" id="dispTeamALabel">Team 1 - Top Scorer:</span>
+                        <span class="match-val" id="dispTeamABat">-</span>
+                    </div>
+                    <div class="match-row">
+                        <span class="match-label" id="dispTeamALabelBowl">Team 1 - Best Bowler:</span>
+                        <span class="match-val" id="dispTeamABowl">-</span>
+                    </div>
+                    <div class="match-row">
+                        <span class="match-label" id="dispTeamBLabel">Team 2 - Top Scorer:</span>
+                        <span class="match-val" id="dispTeamBBat">-</span>
+                    </div>
+                    <div class="match-row">
+                        <span class="match-label" id="dispTeamBLabelBowl">Team 2 - Best Bowler:</span>
+                        <span class="match-val" id="dispTeamBBowl">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cricket-list"></div>
+        </section>
+
+        <!-- WINNERS PAGE -->
+        <section id="winners-page" class="page">
+            <h2>Hall of Champions</h2>
+            <div id="winners-list"></div>
+        </section>
+
+        <!-- LEADERBOARD PAGE -->
+        <section id="leaderboard-page" class="page">
+            <h2>PZX Points Leaderboard</h2>
+            <div class="card">
+                <p style="color:var(--text-sub); margin-bottom: 1rem;">Correct Answer: <b style="color:var(--success);">+5 Pts</b> | Incorrect Answer: <b style="color:var(--danger);">-1 Pt</b></p>
+                <div id="leaderboard-list"></div>
+            </div>
+        </section>
+
+        <!-- ABOUT US PAGE -->
+        <section id="about-page" class="page">
+            <div class="card">
+                <h2>About PZX Arena</h2>
+                <div id="about-content">
+                    <p style="line-height:1.6; margin-bottom:1rem;">
+                        Welcome to <b>PZX Arena</b>! The ultimate quiz platform for gaming, sports, and trivia enthusiasts. Test your knowledge, earn points, and climb the global leaderboard!
+                    </p>
+                    <p style="margin-bottom:1rem;">
+                        📺 <b>Subscribe to our YouTube Channel:</b> <br>
+                        <a href="https://www.youtube.com/@PZX_edits" target="_blank" style="color:var(--accent); font-weight:bold; text-decoration:none;">
+                            youtube.com/@PZX_edits ↗
+                        </a>
+                    </p>
+                </div>
+
+                <!-- Admin Edit About Us -->
+                <div id="about-edit-container" style="display:none; margin-top:1.5rem; border-top: 1px dashed var(--card-border); padding-top: 1rem;">
+                    <h3>Edit About Us (Admin)</h3>
+                    <textarea id="about-input" rows="4"></textarea>
+                    <button onclick="saveAboutUs()" class="btn" style="margin-top:0.5rem;">Save Changes</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- REWARDS PAGE -->
+        <section id="rewards-page" class="page">
+            <div class="card">
+                <h2>Rewards & Points Program</h2>
+                <p style="margin-bottom: 1rem; color: var(--text-sub);">Participate in daily quizzes to collect points and unlock exciting rewards!</p>
+                <div id="rewards-content">
+                    <ul style="margin-left:1.5rem; line-height:2;">
+                        <li>🎯 <b>100 Points:</b> Bronze Arena Badge</li>
+                        <li>🔥 <b>250 Points:</b> Silver Champion Tier</li>
+                        <li>👑 <b>500 Points:</b> Gold Legend & Shoutout on YouTube!</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROFILE PAGE -->
+        <section id="profile-page" class="page">
+            <div class="card" style="text-align: center;">
+                <h2>My Profile</h2>
+                <div style="margin: 1.5rem 0; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+                    <div id="profile-avatar-display"></div>
+                    <h3 id="profile-username-text" style="color:var(--text-main);"></h3>
+                    <p id="profile-email-text" style="color:var(--text-sub); font-size:0.9rem;"></p>
+                    <div style="background: rgba(56, 189, 248, 0.1); padding: 0.8rem 1.5rem; border-radius: 10px; border: 1px solid var(--accent);">
+                        <span style="font-size:0.9rem; color:var(--text-sub);">Total Points:</span>
+                        <h2 id="profile-points-text" style="color:var(--accent); margin:0;">0</h2>
+                    </div>
+                </div>
+
+                <div style="border-top: 1px solid var(--card-border); padding-top: 1rem; text-align: left;">
+                    <label style="font-size:0.9rem; color:var(--text-sub); display:block; margin-bottom:0.5rem;">Upload/Change Profile Picture:</label>
+                    <div style="display:flex; gap:0.5rem; align-items:center;">
+                        <input type="file" id="avatar-input" accept="image/*" onchange="uploadAvatar(event)">
+                        <button class="btn btn-danger" style="padding:0.5rem 0.8rem; font-size:0.8rem;" onclick="removeAvatar()">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN PANEL -->
+        <section id="admin-page" class="page">
+            <h2>Admin Control Panel</h2>
+
+            <!-- MATCH UPDATE CONTROL PANEL FOR ADMIN -->
+            <div class="card">
+                <h3>Post Live Match Updates</h3>
+                <form onsubmit="handleMatchUpdate(event)">
+                    <div class="grid-2col">
+                        <input type="text" id="match-teamA" placeholder="Team 1 Name" required>
+                        <input type="text" id="match-teamB" placeholder="Team 2 Name" required>
+                    </div>
+
+                    <div class="grid-2col">
+                        <input type="text" id="match-tossWinner" placeholder="Toss Winner Team" required>
+                        <input type="text" id="match-matchWinner" placeholder="Match Winner Team" required>
+                    </div>
+
+                    <input type="text" id="match-potm" placeholder="Player of the Match" required>
+
+                    <h4 style="color:var(--accent); font-family:'Rajdhani', sans-serif;">Team 1 Best Performers</h4>
+                    <div class="grid-2col">
+                        <input type="text" id="match-teamABat" placeholder="Highest Scorer (e.g. Kohli 82*)" required>
+                        <input type="text" id="match-teamABowl" placeholder="Best Bowler (e.g. Bumrah 3/20)" required>
+                    </div>
+
+                    <h4 style="color:var(--accent); font-family:'Rajdhani', sans-serif;">Team 2 Best Performers</h4>
+                    <div class="grid-2col">
+                        <input type="text" id="match-teamBBat" placeholder="Highest Scorer (e.g. Smith 65)" required>
+                        <input type="text" id="match-teamBBowl" placeholder="Best Bowler (e.g. Starc 2/35)" required>
+                    </div>
+
+                    <button type="submit" class="btn">Publish Match Details</button>
+                </form>
+            </div>
+            
+            <div class="card">
+                <h3>Create New Quiz</h3>
+                <form onsubmit="addQuiz(event)">
+                    <input type="text" id="quiz-title" placeholder="Quiz Question / Title" required>
+                    <input type="text" id="opt-a" placeholder="Option A" required>
+                    <input type="text" id="opt-b" placeholder="Option B" required>
+                    <input type="text" id="opt-c" placeholder="Option C" required>
+                    <input type="text" id="opt-d" placeholder="Option D" required>
+                    <select id="correct-opt">
+                        <option value="">-- Keep Answer Hidden For Now --</option>
+                        <option value="A">Option A</option>
+                        <option value="B">Option B</option>
+                        <option value="C">Option C</option>
+                        <option value="D">Option D</option>
+                    </select>
+                    <button type="submit" class="btn">Publish Quiz</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Post Cricket Update</h3>
+                <form onsubmit="addCricketNews(event)">
+                    <input type="text" id="news-title" placeholder="Headline / Topic" required>
+                    <div class="tab-group">
+                        <label><input type="radio" name="img-type" value="file" checked onclick="toggleImgInput('file')"> Device File</label>
+                        <label><input type="radio" name="img-type" value="url" onclick="toggleImgInput('url')"> Image URL</label>
+                    </div>
+                    <input type="file" id="news-file" accept="image/*">
+                    <input type="url" id="news-url" placeholder="Image URL (https://...)" style="display: none;">
+                    <textarea id="news-desc" rows="3" placeholder="Match Details / Description" required></textarea>
+                    <button type="submit" class="btn">Publish Update</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Live Submissions & Timestamps (Excludes Admin)</h3>
+                <div id="submissions-list"></div>
+            </div>
+
+            <div class="card">
+                <h3>Announce Winner</h3>
+                <form onsubmit="addWinner(event)">
+                    <input type="text" id="win-title" placeholder="Quiz Title" required>
+                    <input type="text" id="win-name" placeholder="Winner Username" required>
+                    <input type="text" id="win-time" placeholder="Completion Speed / Remarks" required>
+                    <button type="submit" class="btn">Publish Winner</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const ADMIN_EMAIL = "vasudevsarswat48@gmail.com";
+        const ADMIN_USER = "VASUDEV";
+        const ADMIN_PASS = "Vasudev@2009";
+
+        let currentUser = JSON.parse(localStorage.getItem('pzx_user')) || null;
+        let quizzes = JSON.parse(localStorage.getItem('pzx_quizzes')) || [];
+        let cricketNews = JSON.parse(localStorage.getItem('pzx_cricket')) || [];
+        let submissions = JSON.parse(localStorage.getItem('pzx_submissions')) || [];
+        let winners = JSON.parse(localStorage.getItem('pzx_winners')) || [];
+        let aboutText = localStorage.getItem('pzx_about') || "Welcome to PZX Arena! Enjoy quizzes and cricket news.";
+        let matchDetails = JSON.parse(localStorage.getItem('pzx_matchDetails')) || null;
+        let isSignUp = false;
+
+        window.onload = function() {
+            if (currentUser) {
+                unlockApp();
+            } else {
+                showPage('auth-page');
+                document.getElementById('navbar').style.display = 'none';
+            }
+            renderAuthUI();
+        };
+
+        function toggleMenu() {
+            document.getElementById('drawer').classList.toggle('active');
+            document.getElementById('drawer-overlay').classList.toggle('active');
+        }
+
+        function navigateFromDrawer(pageId) {
+            toggleMenu();
+            showPage(pageId);
+        }
+
+        function unlockApp() {
+            document.getElementById('navbar').style.display = 'flex';
+            showPage('quizzes-page');
+            renderQuizzes();
+            renderCricket();
+            renderMatchDetails();
+            renderWinners();
+            renderAbout();
+            if (currentUser.email === ADMIN_EMAIL) renderSubmissions();
+        }
+
+        function showPage(pageId) {
+            if (!currentUser && pageId !== 'auth-page') {
+                alert("Please login or sign up first!");
+                pageId = 'auth-page';
+            }
+
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(pageId).classList.add('active');
+            
+            const activeBtn = Array.from(document.querySelectorAll('nav button'))
+                .find(btn => btn.getAttribute('onclick')?.includes(pageId));
+            if (activeBtn) activeBtn.classList.add('active');
+
+            if (pageId === 'leaderboard-page') renderLeaderboard();
+            if (pageId === 'profile-page') renderProfile();
+        }
+
+        // AUTH SYSTEM WITH GMAIL VALIDATION
+        function toggleAuthMode() {
+            isSignUp = !isSignUp;
+            document.getElementById('auth-title').innerText = isSignUp ? "Create Account" : "Welcome Champ!";
+            document.getElementById('auth-btn').innerText = isSignUp ? "Sign Up" : "Login";
+            document.getElementById('auth-toggle-text').innerText = isSignUp ? "Already registered?" : "Need an account?";
+            document.getElementById('auth-toggle-link').innerText = isSignUp ? "Login" : "Sign Up";
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const userVal = document.getElementById('auth-username').value.trim();
+            const emailVal = document.getElementById('auth-email').value.trim().toLowerCase();
+            const passVal = document.getElementById('auth-password').value;
+
+            // Gmail verification filter
+            if (!emailVal.endsWith("@gmail.com")) {
+                alert("Please provide a valid Gmail address (@gmail.com)!");
+                return;
+            }
+
+            if (emailVal === ADMIN_EMAIL && userVal === ADMIN_USER && passVal === ADMIN_PASS) {
+                currentUser = { username: ADMIN_USER, email: ADMIN_EMAIL, isAdmin: true, avatar: null };
+                saveUserSession();
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('pzx_users')) || [];
+
+            if (isSignUp) {
+                if (users.some(u => u.username.toLowerCase() === userVal.toLowerCase()) || userVal === ADMIN_USER) {
+                    alert("Username already taken! Pick a unique username.");
+                    return;
+                }
+                if (users.some(u => u.email === emailVal)) {
+                    alert("Email already registered!");
+                    return;
+                }
+
+                const newUser = { username: userVal, email: emailVal, password: passVal, avatar: null };
+                users.push(newUser);
+                localStorage.setItem('pzx_users', JSON.stringify(users));
+                currentUser = newUser;
+                saveUserSession();
+            } else {
+                const found = users.find(u => u.email === emailVal && u.password === passVal && u.username === userVal);
+                if (found) {
+                    currentUser = found;
+                    saveUserSession();
+                } else {
+                    alert("Incorrect credentials!");
+                }
+            }
+        }
+
+        // GOOGLE SIGN IN RESPONSE HANDLER
+        function handleGoogleSignIn(response) {
+            const payload = JSON.parse(atob(response.credential.split('.')[1]));
+            const emailVal = payload.email.toLowerCase();
+            const nameVal = payload.name.replace(/\s+/g, '_');
+
+            let users = JSON.parse(localStorage.getItem('pzx_users')) || [];
+            let existing = users.find(u => u.email === emailVal);
+
+            if (!existing) {
+                existing = { username: nameVal, email: emailVal, avatar: payload.picture };
+                users.push(existing);
+                localStorage.setItem('pzx_users', JSON.stringify(users));
+            }
+
+            currentUser = existing;
+            saveUserSession();
+        }
+
+        function saveUserSession() {
+            localStorage.setItem('pzx_user', JSON.stringify(currentUser));
+            renderAuthUI();
+            unlockApp();
+            document.getElementById('auth-form').reset();
+        }
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('pzx_user');
+            renderAuthUI();
+            document.getElementById('navbar').style.display = 'none';
+            if (document.getElementById('drawer').classList.contains('active')) toggleMenu();
+            showPage('auth-page');
+        }
+
+        function renderAuthUI() {
+            const container = document.getElementById('auth-status');
+            const adminNav = document.getElementById('admin-nav');
+
+            if (currentUser) {
+                const isAdmin = currentUser.email === ADMIN_EMAIL;
+                adminNav.style.display = isAdmin ? 'inline-block' : 'none';
+                
+                const avatarHTML = currentUser.avatar 
+                    ? `<img src="${currentUser.avatar}" class="avatar">`
+                    : `<div class="avatar">${currentUser.username.charAt(0).toUpperCase()}</div>`;
+
+                container.innerHTML = `
+                    <div class="user-profile-header">
+                        <span style="font-size:0.9rem;"><b>${currentUser.username}</b></span>
+                        ${avatarHTML}
+                    </div>
+                `;
+            } else {
+                container.innerHTML = '';
+            }
+        }
+
+        // MATCH DETAILS FUNCTIONS
+        function handleMatchUpdate(e) {
+            e.preventDefault();
+            matchDetails = {
+                teamA: document.getElementById('match-teamA').value,
+                teamB: document.getElementById('match-teamB').value,
+                tossWinner: document.getElementById('match-tossWinner').value,
+                matchWinner: document.getElementById('match-matchWinner').value,
+                potm: document.getElementById('match-potm').value,
+                teamABat: document.getElementById('match-teamABat').value,
+                teamABowl: document.getElementById('match-teamABowl').value,
+                teamBBat: document.getElementById('match-teamBBat').value,
+                teamBBowl: document.getElementById('match-teamBBowl').value
+            };
+
+            localStorage.setItem('pzx_matchDetails', JSON.stringify(matchDetails));
+            renderMatchDetails();
+            alert("Match details updated successfully!");
+        }
+
+        function renderMatchDetails() {
+            if (!matchDetails) return;
+            
+            document.getElementById('dispTeams').textContent = `${matchDetails.teamA} vs ${matchDetails.teamB}`;
+            document.getElementById('dispToss').textContent = matchDetails.tossWinner;
+            document.getElementById('dispWinner').textContent = matchDetails.matchWinner;
+            document.getElementById('dispPOTM').textContent = matchDetails.potm;
+
+            document.getElementById('dispTeamALabel').textContent = `${matchDetails.teamA} - Top Scorer:`;
+            document.getElementById('dispTeamABat').textContent = matchDetails.teamABat;
+
+            document.getElementById('dispTeamALabelBowl').textContent = `${matchDetails.teamA} - Best Bowler:`;
+            document.getElementById('dispTeamABowl').textContent = matchDetails.teamABowl;
+
+            document.getElementById('dispTeamBLabel').textContent = `${matchDetails.teamB} - Top Scorer:`;
+            document.getElementById('dispTeamBBat').textContent = matchDetails.teamBBat;
+
+            document.getElementById('dispTeamBLabelBowl').textContent = `${matchDetails.teamB} - Best Bowler:`;
+            document.getElementById('dispTeamBBowl').textContent = matchDetails.teamBBowl;
+
+            // Fill Admin form if admin logged in
+            if (currentUser && currentUser.email === ADMIN_EMAIL) {
+                document.getElementById('match-teamA').value = matchDetails.teamA || '';
+                document.getElementById('match-teamB').value = matchDetails.teamB || '';
+                document.getElementById('match-tossWinner').value = matchDetails.tossWinner || '';
+                document.getElementById('match-matchWinner').value = matchDetails.matchWinner || '';
+                document.getElementById('match-potm').value = matchDetails.potm || '';
+                document.getElementById('match-teamABat').value = matchDetails.teamABat || '';
+                document.getElementById('match-teamABowl').value = matchDetails.teamABowl || '';
+                document.getElementById('match-teamBBat').value = matchDetails.teamBBat || '';
+                document.getElementById('match-teamBBowl').value = matchDetails.teamBBowl || '';
+            }
+        }
+
+        // CALCULATE POINTS
+        function calculateUserPoints(username) {
+            let pts = 0;
+            submissions.forEach(s => {
+                if (s.user === username) {
+                    const q = quizzes.find(item => item.id === s.quizId);
+                    if (q && q.correctOption) {
+                        if (s.selectedOption === q.correctOption) pts += 5;
+                        else pts -= 1;
+                    }
+                }
+            });
+            return pts;
+        }
+
+        // QUIZ MANAGEMENT
+        function addQuiz(e) {
+            e.preventDefault();
+            const quiz = {
+                id: Date.now(),
+                title: document.getElementById('quiz-title').value,
+                options: {
+                    A: document.getElementById('opt-a').value,
+                    B: document.getElementById('opt-b').value,
+                    C: document.getElementById('opt-c').value,
+                    D: document.getElementById('opt-d').value
+                },
+                correctOption: document.getElementById('correct-opt').value || null
+            };
+
+            quizzes.unshift(quiz);
+            localStorage.setItem('pzx_quizzes', JSON.stringify(quizzes));
+            renderQuizzes();
+            e.target.reset();
+            alert("Quiz published!");
+        }
+
+        function deleteQuiz(id) {
+            if (confirm("Delete this quiz?")) {
+                quizzes = quizzes.filter(q => q.id !== id);
+                localStorage.setItem('pzx_quizzes', JSON.stringify(quizzes));
+                renderQuizzes();
+            }
+        }
+
+        function setAnswer(quizId, answer) {
+            const q = quizzes.find(item => item.id === quizId);
+            if (q) {
+                q.correctOption = answer;
+                localStorage.setItem('pzx_quizzes', JSON.stringify(quizzes));
+                renderQuizzes();
+                if (currentUser.email === ADMIN_EMAIL) renderSubmissions();
+            }
+        }
+
+        function submitAnswer(quizId, optKey) {
+            const existing = submissions.find(s => s.quizId === quizId && s.user === currentUser.username);
+            if (existing) {
+                alert("You have already answered!");
+                return;
+            }
+
+            const sub = {
+                quizId: quizId,
+                user: currentUser.username,
+                email: currentUser.email,
+                selectedOption: optKey,
+                timestamp: new Date().toLocaleTimeString() + " (" + new Date().toLocaleDateString() + ")"
+            };
+
+            submissions.push(sub);
+            localStorage.setItem('pzx_submissions', JSON.stringify(submissions));
+            renderQuizzes();
+            if (currentUser.email === ADMIN_EMAIL) renderSubmissions();
+        }
+
+        function renderQuizzes() {
+            const list = document.getElementById('quiz-list');
+            if (quizzes.length === 0) {
+                list.innerHTML = `<div class="card"><p style="color:var(--text-sub);">No active quizzes right now.</p></div>`;
+                return;
+            }
+
+            list.innerHTML = quizzes.map(q => {
+                const userSub = currentUser ? submissions.find(s => s.quizId === q.id && s.user === currentUser.username) : null;
+                const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+
+                return `
+                    <div class="card">
+                        ${isAdmin ? `<button class="delete-btn" onclick="deleteQuiz(${q.id})">Delete</button>` : ''}
+                        <h3>${q.title}</h3>
+                        
+                        <div class="quiz-options">
+                            ${Object.keys(q.options).map(optKey => {
+                                let btnClass = "option-btn";
+                                if (userSub && userSub.selectedOption === optKey) btnClass += " selected";
+                                
+                                return `
+                                    <button class="${btnClass}" onclick="submitAnswer(${q.id}, '${optKey}')" ${userSub ? 'disabled' : ''}>
+                                        <span><b>${optKey}:</b> ${q.options[optKey]}</span>
+                                        ${userSub && userSub.selectedOption === optKey ? '<span class="badge badge-success">Your Answer</span>' : ''}
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        ${userSub ? `
+                            <div style="margin-top: 1rem; padding-top:0.8rem; border-top: 1px solid var(--card-border);">
+                                <p style="font-size:0.85rem; color: var(--text-sub);">Submitted at: ${userSub.timestamp}</p>
+                                <p style="margin-top:0.4rem; font-size:0.95rem;">
+                                    <b>Correct Answer:</b> 
+                                    ${q.correctOption ? 
+                                        `<span style="color:var(--success); font-weight:bold;">Option ${q.correctOption} (${q.options[q.correctOption]})</span>` : 
+                                        `<i style="color:var(--gold);">Revealed soon by Admin!</i>`}
+                                </p>
+                            </div>
+                        ` : ''}
+
+                        ${isAdmin ? `
+                            <div style="margin-top:1rem; padding-top:0.5rem; border-top:1px dashed var(--card-border);">
+                                <small style="color:var(--text-sub);">Admin Control:</small>
+                                <div style="display:flex; gap:0.4rem; margin-top:0.3rem;">
+                                    <button class="btn" style="padding:2px 8px; font-size:0.8rem;" onclick="setAnswer(${q.id}, 'A')">Set A</button>
+                                    <button class="btn" style="padding:2px 8px; font-size:0.8rem;" onclick="setAnswer(${q.id}, 'B')">Set B</button>
+                                    <button class="btn" style="padding:2px 8px; font-size:0.8rem;" onclick="setAnswer(${q.id}, 'C')">Set C</button>
+                                    <button class="btn" style="padding:2px 8px; font-size:0.8rem;" onclick="setAnswer(${q.id}, 'D')">Set D</button>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // CRICKET UPDATES
+        function toggleImgInput(type) {
+            document.getElementById('news-file').style.display = type === 'file' ? 'block' : 'none';
+            document.getElementById('news-url').style.display = type === 'url' ? 'block' : 'none';
+        }
+
+        function addCricketNews(e) {
+            e.preventDefault();
+            const title = document.getElementById('news-title').value;
+            const desc = document.getElementById('news-desc').value;
+            const imgType = document.querySelector('input[name="img-type"]:checked').value;
+
+            if (imgType === 'file') {
+                const fileInput = document.getElementById('news-file');
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        saveCricketPost(title, e.target.result, desc);
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                }
+            } else {
+                saveCricketPost(title, document.getElementById('news-url').value, desc);
+            }
+        }
+
+        function saveCricketPost(title, imageSrc, desc) {
+            const news = { id: Date.now(), title, image: imageSrc, desc, date: new Date().toLocaleDateString() };
+            cricketNews.unshift(news);
+            localStorage.setItem('pzx_cricket', JSON.stringify(cricketNews));
+            renderCricket();
+            document.querySelector('form[onsubmit="addCricketNews(event)"]').reset();
+            alert("Cricket update posted!");
+        }
+
+        function deleteCricket(id) {
+            if (confirm("Delete this update?")) {
+                cricketNews = cricketNews.filter(c => c.id !== id);
+                localStorage.setItem('pzx_cricket', JSON.stringify(cricketNews));
+                renderCricket();
+            }
+        }
+
+        function renderCricket() {
+            const list = document.getElementById('cricket-list');
+            if (cricketNews.length === 0) {
+                list.innerHTML = `<div class="card"><p style="color:var(--text-sub);">No cricket updates available.</p></div>`;
+                return;
+            }
+
+            const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+            list.innerHTML = cricketNews.map(c => `
+                <div class="card">
+                    ${isAdmin ? `<button class="delete-btn" onclick="deleteCricket(${c.id})">Delete</button>` : ''}
+                    <img src="${c.image}" class="news-img" onerror="this.src='https://via.placeholder.com/600x300?text=Cricket+News'">
+                    <h3>${c.title}</h3>
+                    <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:0.8rem;">Posted on ${c.date}</p>
+                    <p>${c.desc}</p>
+                </div>
+            `).join('');
+        }
+
+        // WINNERS
+        function addWinner(e) {
+            e.preventDefault();
+            const win = {
+                id: Date.now(),
+                quizTitle: document.getElementById('win-title').value,
+                name: document.getElementById('win-name').value,
+                time: document.getElementById('win-time').value
+            };
+
+            winners.unshift(win);
+            localStorage.setItem('pzx_winners', JSON.stringify(winners));
+            renderWinners();
+            e.target.reset();
+            alert("Winner published!");
+        }
+
+        function deleteWinner(id) {
+            if (confirm("Delete winner record?")) {
+                winners = winners.filter(w => w.id !== id);
+                localStorage.setItem('pzx_winners', JSON.stringify(winners));
+                renderWinners();
+            }
+        }
+
+        function renderWinners() {
+            const list = document.getElementById('winners-list');
+            if (winners.length === 0) {
+                list.innerHTML = `<div class="card"><p style="color:var(--text-sub);">No winners announced yet.</p></div>`;
+                return;
+            }
+
+            const isAdmin = currentUser && currentUser.email === ADMIN_EMAIL;
+            list.innerHTML = winners.map(w => `
+                <div class="card" style="border-left: 4px solid var(--gold);">
+                    ${isAdmin ? `<button class="delete-btn" onclick="deleteWinner(${w.id})">Delete</button>` : ''}
+                    <h3 style="color: var(--gold);">🏆 Champion: ${w.name}</h3>
+                    <p><b>Quiz:</b> ${w.quizTitle}</p>
+                    <p style="color:var(--text-sub); font-size:0.9rem;"><b>Remarks:</b> ${w.time}</p>
+                </div>
+            `).join('');
+        }
+
+        // LEADERBOARD
+        function renderLeaderboard() {
+            const list = document.getElementById('leaderboard-list');
+            let users = JSON.parse(localStorage.getItem('pzx_users')) || [];
+            
+            let boardData = users.map(u => ({
+                username: u.username,
+                avatar: u.avatar,
+                points: calculateUserPoints(u.username)
+            })).sort((a, b) => b.points - a.points);
+
+            if (boardData.length === 0) {
+                list.innerHTML = `<p style="color:var(--text-sub);">No players on the leaderboard yet.</p>`;
+                return;
+            }
+
+            list.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${boardData.map((item, index) => `
+                            <tr>
+                                <td><b>#${index + 1}</b> ${index === 0 ? '👑' : ''}</td>
+                                <td>
+                                    <div style="display:flex; align-items:center; gap:0.6rem;">
+                                        ${item.avatar ? `<img src="${item.avatar}" class="avatar" style="width:28px;height:28px;">` : `<div class="avatar" style="width:28px;height:28px;font-size:0.8rem;">${item.username.charAt(0)}</div>`}
+                                        <b>${item.username}</b>
+                                    </div>
+                                </td>
+                                <td><b style="color:var(--accent);">${item.points} Pts</b></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        // PROFILE & AVATAR UPLOAD/REMOVE
+        function renderProfile() {
+            if (!currentUser) return;
+            document.getElementById('profile-username-text').innerText = currentUser.username;
+            document.getElementById('profile-email-text').innerText = currentUser.email;
+            document.getElementById('profile-points-text').innerText = calculateUserPoints(currentUser.username);
+
+            const avatarContainer = document.getElementById('profile-avatar-display');
+            if (currentUser.avatar) {
+                avatarContainer.innerHTML = `<img src="${currentUser.avatar}" class="avatar" style="width:80px; height:80px;">`;
+            } else {
+                avatarContainer.innerHTML = `<div class="avatar" style="width:80px; height:80px; font-size:2rem;">${currentUser.username.charAt(0).toUpperCase()}</div>`;
+            }
+        }
+
+        function uploadAvatar(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    currentUser.avatar = evt.target.result;
+                    localStorage.setItem('pzx_user', JSON.stringify(currentUser));
+                    
+                    let users = JSON.parse(localStorage.getItem('pzx_users')) || [];
+                    let idx = users.findIndex(u => u.username === currentUser.username);
+                    if (idx !== -1) {
+                        users[idx].avatar = evt.target.result;
+                        localStorage.setItem('pzx_users', JSON.stringify(users));
+                    }
+
+                    renderAuthUI();
+                    renderProfile();
+                    alert("Profile picture updated!");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function removeAvatar() {
+            if (!currentUser.avatar) return;
+            currentUser.avatar = null;
+            localStorage.setItem('pzx_user', JSON.stringify(currentUser));
+            
+            let users = JSON.parse(localStorage.getItem('pzx_users')) || [];
+            let idx = users.findIndex(u => u.username === currentUser.username);
+            if (idx !== -1) {
+                users[idx].avatar = null;
+                localStorage.setItem('pzx_users', JSON.stringify(users));
+            }
+
+            document.getElementById('avatar-input').value = '';
+            renderAuthUI();
+            renderProfile();
+            alert("Profile picture removed!");
+        }
+
+        // ABOUT US EDITING
+        function renderAbout() {
+            document.getElementById('about-content').innerHTML = `
+                <p style="line-height:1.6; margin-bottom:1rem;">${aboutText}</p>
+                <p>📺 <b>YouTube Channel:</b> <a href="https://www.youtube.com/@PZX_edits" target="_blank" style="color:var(--accent);">youtube.com/@PZX_edits ↗</a></p>
+            `;
+
+            if (currentUser && currentUser.email === ADMIN_EMAIL) {
+                document.getElementById('about-edit-container').style.display = 'block';
+                document.getElementById('about-input').value = aboutText;
+            }
+        }
+
+        function saveAboutUs() {
+            aboutText = document.getElementById('about-input').value;
+            localStorage.setItem('pzx_about', aboutText);
+            renderAbout();
+            alert("About Us updated!");
+        }
+
+        // SUBMISSIONS (EXCLUDES ADMIN, HIGHLIGHTS RED/GREEN)
+        function renderSubmissions() {
+            const list = document.getElementById('submissions-list');
+            
+            const userSubmissions = submissions.filter(s => s.email !== ADMIN_EMAIL);
+
+            if (userSubmissions.length === 0) {
+                list.innerHTML = `<p style="color:var(--text-sub);">No contestant submissions yet.</p>`;
+                return;
+            }
+
+            list.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Quiz Title</th>
+                            <th>Submission</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${userSubmissions.map(s => {
+                            const q = quizzes.find(item => item.id === s.quizId);
+                            let isCorrect = q && q.correctOption && s.selectedOption === q.correctOption;
+                            let badgeClass = isCorrect ? 'badge-success' : 'badge-danger';
+                            let statusText = isCorrect ? `Option ${s.selectedOption} (+5)` : `Option ${s.selectedOption} (-1)`;
+
+                            return `
+                                <tr>
+                                    <td><b>${s.user}</b><br><small style="color:var(--text-sub);">${s.email}</small></td>
+                                    <td>${q ? q.title : 'Deleted Quiz'}</td>
+                                    <td><span class="badge ${badgeClass}">${statusText}</span></td>
+                                    <td>${s.timestamp}</td>
+                                </tr>
+                            `;
+                        }).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+    </script>
+</body>
+</html>

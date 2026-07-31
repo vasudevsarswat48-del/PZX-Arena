@@ -1542,5 +1542,56 @@
             lockApp(); 
         }
     </script>
+    <script type="module">
+  // Import the required Firebase Firestore functions
+  import { 
+    getFirestore, 
+    collection, 
+    query, 
+    where, 
+    getDocs, 
+    doc, 
+    updateDoc, 
+    deleteDoc 
+  } from "https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js";
+
+  // Initialize Firestore (make sure 'app' or 'db' is already initialized)
+  const db = getFirestore();
+
+  // Function to reassign quizzes and delete user
+  async function deleteUserAccount(userId) {
+    try {
+      // 1. Find all quizzes created by this user
+      const quizzesRef = collection(db, "quizzes");
+      const q = query(quizzesRef, where("userId", "==", userId));
+      const querySnapshot = await getDocs(q);
+
+      // 2. Loop through each quiz and reassign it
+      const updatePromises = querySnapshot.docs.map(async (docSnapshot) => {
+        const quizDocRef = doc(db, "quizzes", docSnapshot.id);
+        return updateDoc(quizDocRef, {
+          userId: "admin_or_deleted_user",
+          author: "PZX Admin"
+        });
+      });
+
+      // Wait for all quiz updates to complete
+      await Promise.all(updatePromises);
+
+      // 3. Delete the user document from the users collection
+      await deleteDoc(doc(db, "users", userId));
+
+      console.log("Quizzes reassigned and user successfully deleted.");
+    } catch (error) {
+      console.error("Error deleting user account: ", error);
+    }
+  }
+
+  // Example trigger: Attach to a Delete Button click event
+  document.getElementById("deleteAccountBtn").addEventListener("click", () => {
+    const currentUserId = "USER_ID_TO_DELETE"; // Replace with logged-in user's ID
+    deleteUserAccount(currentUserId);
+  });
+</script>
 </body>
 </html>

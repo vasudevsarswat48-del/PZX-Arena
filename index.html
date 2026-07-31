@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PZX Arena - Management System</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -122,11 +122,43 @@
             color: var(--accent);
             margin-bottom: 0.8rem;
         }
+        .update-preview-img-box {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            border-radius: 8px;
+            position: relative;
+            background: #000;
+        }
         .update-preview-img {
             width: 100%;
-            max-height: 220px;
+            height: 100%;
             object-fit: cover;
+        }
+
+        /* Crop & Frame Control Panel */
+        .crop-controls-container {
+            background: #0B0F19;
+            border: 1px solid var(--card-border);
+            padding: 1rem;
             border-radius: 8px;
+            margin: 0.5rem 0;
+            display: none;
+        }
+        .crop-controls-container label {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+        .crop-preview-canvas {
+            width: 100%;
+            height: 200px;
+            border: 1px dashed var(--accent);
+            border-radius: 8px;
+            margin-top: 0.5rem;
+            background: #000;
         }
 
         /* Update Full View Modal Styling */
@@ -183,6 +215,10 @@
             line-height: 1.6;
             color: var(--text-main);
             font-size: 0.95rem;
+        }
+        .bold-text {
+            font-weight: 700;
+            color: #FFF;
         }
 
         /* Collapsible List Container Header */
@@ -302,7 +338,7 @@
                 <div class="card">
                     <h3>Share Something</h3>
                     <form onsubmit="handleCreatePost(event)">
-                        <textarea id="post-text" placeholder="What's on your mind?" rows="3" required></textarea>
+                        <textarea id="post-text" placeholder="What's on your mind? (Use *bold text* for bold)" rows="3" required></textarea>
                         <input type="url" id="post-img-url" placeholder="Image URL (optional)">
                         <input type="file" id="post-img-file" accept="image/*">
                         <button type="submit" class="btn">Publish Post</button>
@@ -423,14 +459,32 @@
                     </div>
                 </div>
 
-                <!-- 3. POST NEWS/UPDATES -->
+                <!-- 3. POST NEWS/UPDATES WITH IMAGE CROPPING -->
                 <div class="card">
                     <h3>Post Cricket Update / Announcement</h3>
+                    <p style="font-size:0.8rem; color:var(--text-sub); margin-bottom:0.5rem;">Tip: Wrap words in asterisks like <code>*bold*</code> or <code>**bold**</code> for bold formatting.</p>
                     <form onsubmit="handleAddUpdate(event)">
-                        <input type="text" id="update-title" placeholder="Title" required>
-                        <textarea id="update-content" placeholder="Content details..." rows="4" required></textarea>
-                        <input type="url" id="update-img-url" placeholder="Image URL (optional)">
-                        <input type="file" id="update-img-file" accept="image/*">
+                        <input type="text" id="update-title" placeholder="Title (Use *bold* for bold text)" required>
+                        <textarea id="update-content" placeholder="Content details... (Use *bold* for bold text)" rows="4" required></textarea>
+                        
+                        <input type="url" id="update-img-url" placeholder="Image URL (optional)" onchange="initCropPreviewFromUrl(this.value)">
+                        <input type="file" id="update-img-file" accept="image/*" onchange="initCropPreviewFromFile(this)">
+                        
+                        <!-- Interactive Preview Image Cropper -->
+                        <div class="crop-controls-container" id="crop-controls-container">
+                            <b style="color:var(--gold); font-size:0.9rem;">Set Card Preview Image Framing:</b>
+                            <canvas id="cropCanvas" class="crop-preview-canvas" width="600" height="300"></canvas>
+                            
+                            <label>Zoom Level: <span id="val-zoom">100%</span></label>
+                            <input type="range" id="crop-zoom" min="100" max="300" value="100" oninput="updateCropCanvas()">
+                            
+                            <label>Horizontal Position (X): <span id="val-x">50%</span></label>
+                            <input type="range" id="crop-x" min="0" max="100" value="50" oninput="updateCropCanvas()">
+                            
+                            <label>Vertical Position (Y): <span id="val-y">50%</span></label>
+                            <input type="range" id="crop-y" min="0" max="100" value="50" oninput="updateCropCanvas()">
+                        </div>
+
                         <button type="submit" class="btn">Publish Update</button>
                     </form>
 
@@ -513,6 +567,7 @@
         ];
 
         let activeQuizCategory = 'GK';
+        let cropImageObj = null;
 
         const adminIndex = users.findIndex(u => u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
         if (adminIndex !== -1) {
@@ -582,6 +637,15 @@
 
             const targetNavBtn = document.querySelector(`[onclick="showPage('${pageId}')"]`);
             if (targetNavBtn) targetNavBtn.classList.add('active');
+        }
+
+        /* ---------------- BOLD FORMATTER HELPER ---------------- */
+        function formatBoldText(str) {
+            if (!str) return '';
+            // Replaces **text** or *text* with <span class="bold-text">text</span>
+            return str
+                .replace(/\*\*(.*?)\*\*/g, '<span class="bold-text">$1</span>')
+                .replace(/\*(.*?)\*/g, '<span class="bold-text">$1</span>');
         }
 
         function showAuthTab(tab) {
@@ -721,7 +785,7 @@
                         const selectedClass = (userSelection && parseInt(userSelection) === optNum) ? 'selected' : '';
                         optHTML += `
                             <button class="quiz-opt-btn ${selectedClass}" onclick="submitQuizAnswer(${q.id}, ${optNum})">
-                                <span>${opt}</span>
+                                <span>${formatBoldText(opt)}</span>
                                 ${selectedClass ? '<b>(Your Choice)</b>' : ''}
                             </button>`;
                     }
@@ -741,7 +805,7 @@
                 html += `
                     <div class="card">
                         <span class="badge ${badgeClass}">${isGK ? 'General Knowledge' : 'Prediction'}</span>
-                        <h3>${q.question}</h3>
+                        <h3>${formatBoldText(q.question)}</h3>
                         ${optHTML}
                         ${statusText}
                     </div>`;
@@ -832,7 +896,6 @@
         }
 
         function evaluateUserScore(quiz, chosenOpt) {
-            // Admin users do not accumulate stars on leaderboard
             if (currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                 alert("Admin choice logged.");
                 return;
@@ -855,7 +918,6 @@
 
         function processQuizSettlement(quiz) {
             users.forEach(u => {
-                // Skip updating stars for Admin account
                 if (u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
 
                 const userAnsKey = `ans_${u.email}_${quiz.id}`;
@@ -916,7 +978,7 @@
                             <b>👤 ${log.username} (${log.email})</b>
                             <span style="color:var(--text-sub); font-size:0.75rem;">🕒 ${log.timestamp}</span>
                         </div>
-                        <div style="color:var(--accent); font-weight:600;">❓ ${quizTitle}</div>
+                        <div style="color:var(--accent); font-weight:600;">❓ ${formatBoldText(quizTitle)}</div>
                         <div style="margin-top:0.3rem; display:flex; justify-content:space-between; align-items:center;">
                             <span>Selected: <b>Option ${String.fromCharCode(64 + log.optionChosen)} - "${log.optionText}"</b></span>
                             ${statusHTML}
@@ -1066,7 +1128,7 @@
                                 <div style="font-size:0.75rem; color:var(--text-sub);">${p.date}</div>
                             </div>
                         </div>
-                        <p style="white-space: pre-wrap;">${p.text}</p>
+                        <p style="white-space: pre-wrap;">${formatBoldText(p.text)}</p>
                         ${p.image ? `<img src="${p.image}" class="post-img">` : ''}
                     </div>`;
             });
@@ -1113,6 +1175,56 @@
             });
         }
 
+        /* ---------------- UPDATE IMAGE CROPPING & SETTINGS ---------------- */
+        function initCropPreviewFromFile(fileInput) {
+            if (fileInput.files && fileInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    initCropImage(evt.target.result);
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+            }
+        }
+
+        function initCropPreviewFromUrl(url) {
+            if (url) initCropImage(url);
+        }
+
+        function initCropImage(src) {
+            cropImageObj = new Image();
+            cropImageObj.crossOrigin = "anonymous";
+            cropImageObj.onload = function() {
+                document.getElementById('crop-controls-container').style.display = 'block';
+                updateCropCanvas();
+            };
+            cropImageObj.src = src;
+        }
+
+        function updateCropCanvas() {
+            if (!cropImageObj) return;
+            const canvas = document.getElementById('cropCanvas');
+            const ctx = canvas.getContext('2d');
+
+            const zoomVal = parseInt(document.getElementById('crop-zoom').value);
+            const xVal = parseInt(document.getElementById('crop-x').value);
+            const yVal = parseInt(document.getElementById('crop-y').value);
+
+            document.getElementById('val-zoom').innerText = `${zoomVal}%`;
+            document.getElementById('val-x').innerText = `${xVal}%`;
+            document.getElementById('val-y').innerText = `${yVal}%`;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const scale = (zoomVal / 100);
+            const imgWidth = cropImageObj.width * scale;
+            const imgHeight = cropImageObj.height * scale;
+
+            const posX = (canvas.width - imgWidth) * (xVal / 100);
+            const posY = (canvas.height - imgHeight) * (yVal / 100);
+
+            ctx.drawImage(cropImageObj, posX, posY, imgWidth, imgHeight);
+        }
+
         function handleAddUpdate(e) {
             e.preventDefault();
             const title = document.getElementById('update-title').value;
@@ -1120,18 +1232,33 @@
             const urlImg = document.getElementById('update-img-url').value.trim();
             const fileImg = document.getElementById('update-img-file').files[0];
 
+            let previewCropData = null;
+            if (cropImageObj) {
+                const canvas = document.getElementById('cropCanvas');
+                previewCropData = canvas.toDataURL('image/jpeg', 0.85);
+            }
+
             if (fileImg) {
                 const reader = new FileReader();
-                reader.onload = function(evt) { saveUpdate(title, content, evt.target.result); };
+                reader.onload = function(evt) { saveUpdate(title, content, evt.target.result, previewCropData); };
                 reader.readAsDataURL(fileImg);
             } else {
-                saveUpdate(title, content, urlImg);
+                saveUpdate(title, content, urlImg, previewCropData);
             }
+            
             e.target.reset();
+            document.getElementById('crop-controls-container').style.display = 'none';
+            cropImageObj = null;
         }
 
-        function saveUpdate(title, content, image) {
-            updates.unshift({ id: Date.now(), title, content, image });
+        function saveUpdate(title, content, rawImage, previewCropData) {
+            updates.unshift({ 
+                id: Date.now(), 
+                title, 
+                content, 
+                image: rawImage,
+                previewImage: previewCropData || rawImage
+            });
             localStorage.setItem('pzx_updates', JSON.stringify(updates));
             renderUpdates();
             renderAdminPanels();
@@ -1152,10 +1279,14 @@
             container.innerHTML = updates.length ? '' : '<p>No cricket updates available.</p>';
             
             updates.forEach((u, idx) => {
+                const displayImg = u.previewImage || u.image;
                 container.innerHTML += `
                     <div class="update-preview-card" onclick="openUpdateModal(${idx})">
-                        <div class="update-preview-title">${u.title}</div>
-                        ${u.image ? `<img src="${u.image}" class="update-preview-img" alt="Update Image">` : ''}
+                        <div class="update-preview-title">${formatBoldText(u.title)}</div>
+                        ${displayImg ? `
+                            <div class="update-preview-img-box">
+                                <img src="${displayImg}" class="update-preview-img" alt="Update Image">
+                            </div>` : ''}
                     </div>`;
             });
         }
@@ -1165,17 +1296,17 @@
             const u = updates[index];
             if (!u) return;
 
-            document.getElementById('modal-update-title').innerText = u.title || '';
+            document.getElementById('modal-update-title').innerHTML = formatBoldText(u.title || '');
             
             const imgEl = document.getElementById('modal-update-img');
             if (u.image) {
-                imgEl.src = u.image;
+                imgEl.src = u.image; // Uncropped original image for detail view
                 imgEl.style.display = 'block';
             } else {
                 imgEl.style.display = 'none';
             }
 
-            document.getElementById('modal-update-content').innerText = u.content || '';
+            document.getElementById('modal-update-content').innerHTML = formatBoldText(u.content || '');
             document.getElementById('update-modal').classList.add('active');
         }
 
@@ -1209,12 +1340,11 @@
             winners.forEach(w => {
                 winContainer.innerHTML += `
                     <div style="background:rgba(245, 158, 11, 0.1); border:1px solid var(--gold); padding:0.8rem; border-radius:8px; margin-bottom:0.8rem;">
-                        <h4 style="color:var(--gold);">${w.title}</h4>
-                        <p style="white-space: pre-line; margin-top:0.4rem; font-size:0.9rem;">${w.rankings}</p>
+                        <h4 style="color:var(--gold);">${formatBoldText(w.title)}</h4>
+                        <p style="white-space: pre-line; margin-top:0.4rem; font-size:0.9rem;">${formatBoldText(w.rankings)}</p>
                     </div>`;
             });
 
-            // Filter out the Admin account from the leaderboard ranking display
             const nonAdminUsers = users.filter(u => u.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase());
             const sorted = [...nonAdminUsers].sort((a, b) => (b.stars || 0) - (a.stars || 0));
             const lbContainer = document.getElementById('leaderboard-list');

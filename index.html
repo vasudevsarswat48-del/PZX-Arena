@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
+   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-KTYVG85B3B"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -11,10 +11,14 @@
 </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PZX Arena - Pitch-Zen-Xplosive</title>
-    <meta name="google-site-verification" content="dI0yHu5bWiJCJBkoKloyC61Gc6Mbz9R8SrSBSvJ4cbI" />
+    <title>PZX Arena-Pitch-Zen-Xplosive</title>
+    <meta name="google-site-verification" content="dI0yHu5bWiJCJKboKloyC61Gc6Mbz9R8SrSBSvJ4cbI" />
+    
+
     <link rel="icon" type="image/png" sizes="192x192" href="favicon.png">
-<link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -112,6 +116,31 @@
         .status-wrong { color: var(--danger); font-weight: bold; }
         .status-pending { color: var(--gold); font-weight: bold; }
 
+        /* SEARCH BAR STYLING */
+        .search-container {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 2.5rem;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: #FFF;
+            font-size: 0.95rem;
+        }
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+        .search-icon {
+            position: absolute;
+            left: 0.9rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-sub);
+        }
+
         /* UPDATES HORIZONTAL NEWS CARD STYLING */
         .news-card {
             display: flex;
@@ -199,6 +228,101 @@
             background: rgba(56, 189, 248, 0.25);
         }
 
+        /* MATCHES SCREEN & FULL CONTAINER FIT */
+        .matches-view-container {
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding-right: 0.3rem;
+        }
+        .category-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .category-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* ELEVATED RECTANGULAR STRIP CHAT INPUT (COMMUNITY PAGE) */
+        #community-page {
+            padding-bottom: 100px;
+        }
+        .bottom-strip-wrapper {
+            position: fixed;
+            bottom: 24px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            z-index: 900;
+            padding: 0 1rem;
+            pointer-events: none;
+        }
+        .bottom-strip-container {
+            pointer-events: auto;
+            width: 100%;
+            max-width: 820px;
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 0.5rem 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.45);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .strip-plus-btn {
+            background: transparent;
+            border: none;
+            font-size: 1.5rem;
+            color: #1E293B;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0.2rem;
+            font-weight: bold;
+        }
+        .strip-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: #0F172A;
+            font-size: 0.95rem;
+            outline: none;
+            padding: 0.4rem 0;
+        }
+        .strip-input::placeholder {
+            color: #64748B;
+        }
+        .strip-send-btn {
+            background: #38BDF8;
+            color: #000;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .strip-send-btn:hover {
+            background: #0284C7;
+            color: #FFF;
+        }
+
         @media (max-width: 650px) {
             .news-card {
                 flex-direction: column;
@@ -209,9 +333,11 @@
                 max-width: 100%;
                 height: 190px;
             }
+            .bottom-strip-wrapper {
+                bottom: 16px;
+            }
         }
 
-        /* Update Full View Modal Styling */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -223,9 +349,7 @@
             justify-content: center;
             padding: 1rem;
         }
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
         .modal-content {
             background: #0F172A;
             border: 1px solid var(--card-border);
@@ -266,10 +390,7 @@
             color: var(--text-main);
             font-size: 0.95rem;
         }
-        .bold-text {
-            font-weight: 700;
-            color: #FFF;
-        }
+        .bold-text { font-weight: 700; color: #FFF; }
 
         .collapse-header {
             display: flex;
@@ -279,10 +400,7 @@
             padding-top: 0.5rem;
             border-top: 1px solid var(--card-border);
         }
-        .collapse-wrapper {
-            display: none;
-            margin-top: 1rem;
-        }
+        .collapse-wrapper { display: none; margin-top: 1rem; }
     </style>
 </head>
 <body>
@@ -360,12 +478,20 @@
             <!-- MATCHES PAGE -->
             <section id="matches-page" class="page active">
                 <h2>Cricket Center</h2>
-                <div id="user-matches-list"></div>
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="matches-search" class="search-input" placeholder="Search matches by team, winner, or category..." oninput="renderMatches()">
+                </div>
+                <div id="matches-view-host" class="matches-view-container"></div>
             </section>
 
             <!-- UPDATES PAGE -->
             <section id="updates-page" class="page">
                 <h2>Cricket Updates</h2>
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="updates-search" class="search-input" placeholder="Search news updates by keyword or tags..." oninput="renderUpdates()">
+                </div>
                 <div id="user-updates-list"></div>
                 <button id="load-more-updates-btn" class="load-more-btn" onclick="loadMoreUpdates()" style="display:none;">Load More Updates ▼</button>
             </section>
@@ -374,27 +500,36 @@
             <section id="quizzes-page" class="page">
                 <h2>Quizzes & Predictions</h2>
                 
-                <div style="display:flex; gap:0.8rem; margin-bottom:1.5rem;">
+                <div style="display:flex; gap:0.8rem; margin-bottom:1rem; flex-wrap:wrap;">
                     <button class="category-tab-btn active" id="tab-btn-gk" onclick="switchQuizCategory('GK')">🧠 General Knowledge</button>
                     <button class="category-tab-btn" id="tab-btn-pred" onclick="switchQuizCategory('PRED')">🔮 Predictions</button>
                 </div>
 
+                <!-- GK SUB CATEGORIES TOGGLE -->
+                <div id="gk-subcategories-bar" style="display:flex; gap:0.5rem; margin-bottom:1.5rem;">
+                    <button class="btn btn-sm btn-gold" id="sub-easy-btn" onclick="switchGkDifficulty('EASY')">Easy (+3 / -1)</button>
+                    <button class="btn btn-sm" id="sub-med-btn" style="background:#334155;" onclick="switchGkDifficulty('MEDIUM')">Medium (🔒 20 ⭐ | +4 / -1)</button>
+                    <button class="btn btn-sm" id="sub-hard-btn" style="background:#334155;" onclick="switchGkDifficulty('HARD')">Hard (🔒 30 ⭐ | +5 / 0)</button>
+                </div>
+
                 <div id="user-quizzes-list"></div>
+                <button id="load-more-quizzes-btn" class="load-more-btn" onclick="loadMoreQuizzes()" style="display:none;">Load More Quizzes ▼</button>
             </section>
 
             <!-- COMMUNITY PAGE -->
             <section id="community-page" class="page">
                 <h2>Community Hub</h2>
-                <div class="card">
-                    <h3>Share Something</h3>
-                    <form onsubmit="handleCreatePost(event)">
-                        <textarea id="post-text" placeholder="What's on your mind? (Use *bold text* for bold)" rows="3" required></textarea>
-                        <input type="url" id="post-img-url" placeholder="Image URL (optional)">
-                        <input type="file" id="post-img-file" accept="image/*">
-                        <button type="submit" class="btn">Publish Post</button>
-                    </form>
-                </div>
                 <div id="community-feed"></div>
+
+                <!-- FLOATING RECTANGULAR CHAT STRIP -->
+                <div class="bottom-strip-wrapper">
+                    <div class="bottom-strip-container">
+                        <button class="strip-plus-btn" onclick="triggerStripFileUpload()">+</button>
+                        <input type="file" id="strip-file-input" accept="image/*" style="display:none;" onchange="handleStripFileSelect(event)">
+                        <input type="text" id="strip-text-input" class="strip-input" placeholder="Type a message or post..." onkeypress="handleStripKeyPress(event)">
+                        <button class="strip-send-btn" onclick="submitStripPost()">↑</button>
+                    </div>
+                </div>
             </section>
 
             <!-- LEADERBOARD PAGE -->
@@ -432,12 +567,28 @@
             <!-- MORE INFO PAGE -->
             <section id="more-info-page" class="page">
                 <h2>More Info & Links</h2>
+                <div class="card" id="info-header-card" style="text-align: center; margin-bottom: 1rem;">
+                    <div id="info-app-logo" style="width: 60px; height: 60px; margin: 0 auto 0.5rem; font-size: 1.5rem;" class="avatar-circle">PZX</div>
+                    <h3 id="info-app-name">PZX Arena - Pitch-Zen-Xplosive</h3>
+                    <p id="info-account-name" style="color: var(--text-sub); font-size: 0.9rem;">Managed by Vasudev</p>
+                </div>
                 <div class="card" id="info-links-container"></div>
             </section>
 
             <!-- ADMIN PAGE -->
             <section id="admin-page" class="page">
                 <h2>Admin Operations Center</h2>
+
+                <!-- APP & MORE INFO CONFIGURATION -->
+                <div class="card">
+                    <h3>Configure Application & More Info Screen</h3>
+                    <form onsubmit="handleSaveInfoConfig(event)">
+                        <input type="text" id="cfg-app-name" placeholder="App Name (e.g., PZX Arena - Pitch-Zen-Xplosive)" required>
+                        <input type="url" id="cfg-app-logo" placeholder="App Logo Image URL">
+                        <input type="text" id="cfg-account-name" placeholder="Account / Admin Publisher Name" required>
+                        <button type="submit" class="btn btn-gold">Save Info Screen Config</button>
+                    </form>
+                </div>
 
                 <!-- 1. QUIZ & PREDICTION MANAGEMENT -->
                 <div class="card">
@@ -448,6 +599,13 @@
                             <option value="GK">General Knowledge (4 Options Required)</option>
                             <option value="PRED">Prediction (2 to 4 Options Allowed)</option>
                         </select>
+
+                        <select id="quiz-difficulty">
+                            <option value="EASY">Difficulty: Easy (0 Stars Unlocked)</option>
+                            <option value="MEDIUM">Difficulty: Medium (20 Stars Required)</option>
+                            <option value="HARD">Difficulty: Hard (30 Stars Required)</option>
+                        </select>
+
                         <input type="text" id="quiz-question" placeholder="Question / Prediction Prompt" required>
                         <input type="text" id="quiz-opt1" placeholder="Option A *" required>
                         <input type="text" id="quiz-opt2" placeholder="Option B *" required>
@@ -491,6 +649,7 @@
                 <div class="card">
                     <h3>Publish Post-Match Summary</h3>
                     <form onsubmit="handleAddPostMatch(event)">
+                        <input type="text" id="pm-category" placeholder="Match Category / Tournament (e.g. IPL 2026, T20 WC)" required>
                         <input type="text" id="pm-team1" placeholder="Team 1" required>
                         <input type="text" id="pm-team2" placeholder="Team 2" required>
                         <input type="text" id="pm-toss" placeholder="Toss Winner" required>
@@ -595,6 +754,12 @@
             avatar: ''
         };
 
+        const DEFAULT_RESTORED_QUIZZES = [
+            { id: 101, type: "GK", difficulty: "EASY", question: "Which cricketer holds the record for highest individual score in ODIs?", options: ["Rohit Sharma", "Martin Guptill", "Virender Sehwag", "Chris Gayle"], correct: 1 },
+            { id: 102, type: "GK", difficulty: "MEDIUM", question: "Who won the ICC Men's T20 World Cup 2024?", options: ["South Africa", "India", "Australia", "England"], correct: 2 },
+            { id: 103, type: "PRED", difficulty: "EASY", question: "Who will hit more sixes in today's match?", options: ["Team A", "Team B"], correct: 0 }
+        ];
+
         let users = JSON.parse(localStorage.getItem('pzx_users_list')) || [];
         let matches = JSON.parse(localStorage.getItem('pzx_matches')) || [];
         let updates = JSON.parse(localStorage.getItem('pzx_updates')) || [];
@@ -605,8 +770,22 @@
             { id: 1, title: 'Official Rules', url: 'https://example.com/rules' }
         ];
 
+        let appConfig = JSON.parse(localStorage.getItem('pzx_app_config')) || {
+            appName: "PZX Arena - Pitch-Zen-Xplosive",
+            appLogo: "",
+            accountName: "Vasudev"
+        };
+
+        if (!localStorage.getItem('pzx_quizzes') || JSON.parse(localStorage.getItem('pzx_quizzes')).length === 0) {
+            localStorage.setItem('pzx_quizzes', JSON.stringify(DEFAULT_RESTORED_QUIZZES));
+        }
+
         let activeQuizCategory = 'GK';
+        let activeGkDifficulty = 'EASY';
         let updatesVisibleCount = 3;
+        let quizzesVisibleCount = 5;
+        let activeMatchCategory = null; 
+        let pendingStripImage = "";
 
         const adminIndex = users.findIndex(u => u.email.toLowerCase() === ADMIN_EMAIL.toLowerCase());
         if (adminIndex !== -1) {
@@ -672,6 +851,7 @@
             if (pageId === 'updates-page') renderUpdates();
             if (pageId === 'community-page') renderCommunity();
             if (pageId === 'leaderboard-page') renderLeaderboardAndWinners();
+            if (pageId === 'more-info-page') renderMoreInfoConfig();
             if (pageId === 'admin-page') renderAdminPanels();
 
             const targetNavBtn = document.querySelector(`[onclick="showPage('${pageId}')"]`);
@@ -774,23 +954,43 @@
             renderCommunity();
             renderLeaderboardAndWinners();
             renderProfile();
+            renderMoreInfoConfig();
             renderInfoLinks();
             if (currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
                 renderAdminPanels();
             }
         }
 
-        /* ---------------- QUIZ SYSTEM ---------------- */
+        /* ---------------- QUIZ & UNLOCK SYSTEM ---------------- */
         function switchQuizCategory(category) {
             activeQuizCategory = category;
             document.getElementById('tab-btn-gk').classList.toggle('active', category === 'GK');
             document.getElementById('tab-btn-pred').classList.toggle('active', category === 'PRED');
+            document.getElementById('gk-subcategories-bar').style.display = (category === 'GK') ? 'flex' : 'none';
+            quizzesVisibleCount = 5;
+            renderQuizzes();
+        }
+
+        function switchGkDifficulty(diff) {
+            const userStars = currentUser.stars || 0;
+            if (diff === 'MEDIUM' && userStars < 20) {
+                return alert("🔒 Medium difficulty requires at least 20 Stars to unlock!");
+            }
+            if (diff === 'HARD' && userStars < 30) {
+                return alert("🔒 Hard difficulty requires at least 30 Stars to unlock!");
+            }
+
+            activeGkDifficulty = diff;
+            document.getElementById('sub-easy-btn').style.background = (diff === 'EASY') ? 'var(--gold)' : '#334155';
+            document.getElementById('sub-med-btn').style.background = (diff === 'MEDIUM') ? 'var(--gold)' : '#334155';
+            document.getElementById('sub-hard-btn').style.background = (diff === 'HARD') ? 'var(--gold)' : '#334155';
+            quizzesVisibleCount = 5;
             renderQuizzes();
         }
 
         function getQuizzes() {
             const parsed = localStorage.getItem('pzx_quizzes');
-            return parsed ? JSON.parse(parsed) : [];
+            return parsed ? JSON.parse(parsed) : DEFAULT_RESTORED_QUIZZES;
         }
 
         function saveQuizzes(list) {
@@ -812,20 +1012,37 @@
 
         function renderQuizzes() {
             const container = document.getElementById('user-quizzes-list');
+            const loadMoreBtn = document.getElementById('load-more-quizzes-btn');
             if (!container) return;
 
-            const list = getQuizzes().filter(q => q.type === activeQuizCategory);
+            let list = getQuizzes().filter(q => q.type === activeQuizCategory);
+
+            if (activeQuizCategory === 'GK') {
+                list = list.filter(q => (q.difficulty || 'EASY') === activeGkDifficulty);
+            }
             
             if (list.length === 0) {
-                container.innerHTML = `<p style="color:var(--text-sub);">No active ${activeQuizCategory === 'GK' ? 'General Knowledge Quizzes' : 'Predictions'} available.</p>`;
+                container.innerHTML = `<p style="color:var(--text-sub);">No active ${activeQuizCategory === 'GK' ? activeGkDifficulty : ''} items available.</p>`;
+                loadMoreBtn.style.display = 'none';
                 return;
             }
 
+            const visibleList = list.slice(0, quizzesVisibleCount);
             let html = '';
-            list.forEach(q => {
+
+            visibleList.forEach(q => {
                 const isGK = q.type === 'GK';
-                const posStars = isGK ? 5 : 10;
-                const negStars = 1;
+                const diff = q.difficulty || 'EASY';
+
+                let posStars = 5, negStars = 1;
+                if (isGK) {
+                    if (diff === 'EASY') { posStars = 3; negStars = 1; }
+                    else if (diff === 'MEDIUM') { posStars = 4; negStars = 1; }
+                    else if (diff === 'HARD') { posStars = 5; negStars = 0; }
+                } else {
+                    posStars = 10; negStars = 1;
+                }
+
                 const badgeClass = isGK ? 'badge-gk' : 'badge-pred';
                 const userAnsKey = `ans_${currentUser.email}_${q.id}`;
                 const userSelection = localStorage.getItem(userAnsKey);
@@ -856,7 +1073,7 @@
 
                 html += `
                     <div class="card">
-                        <span class="badge ${badgeClass}">${isGK ? 'General Knowledge' : 'Prediction'}</span>
+                        <span class="badge ${badgeClass}">${isGK ? 'GK - ' + diff : 'Prediction'}</span>
                         <h3>${formatBoldText(q.question)}</h3>
                         ${optHTML}
                         ${statusText}
@@ -864,12 +1081,24 @@
             });
 
             container.innerHTML = html;
+
+            if (list.length > quizzesVisibleCount) {
+                loadMoreBtn.style.display = 'block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
+
+        function loadMoreQuizzes() {
+            quizzesVisibleCount += 5;
+            renderQuizzes();
         }
 
         function handleSaveQuiz(e) {
             e.preventDefault();
             const editId = document.getElementById('quiz-edit-id').value;
             const type = document.getElementById('quiz-type').value;
+            const difficulty = document.getElementById('quiz-difficulty').value;
             const question = document.getElementById('quiz-question').value;
             
             const rawOpts = [
@@ -893,13 +1122,13 @@
                 const targetIdx = list.findIndex(q => String(q.id) === String(editId));
                 if (targetIdx !== -1) {
                     const oldCorrect = list[targetIdx].correct;
-                    list[targetIdx] = { id: Number(editId), type, question, options: rawOpts, correct };
+                    list[targetIdx] = { id: Number(editId), type, difficulty, question, options: rawOpts, correct };
                     if (oldCorrect === 0 && correct !== 0) {
                         processQuizSettlement(list[targetIdx]);
                     }
                 }
             } else {
-                const newQ = { id: Date.now(), type, question, options: rawOpts, correct };
+                const newQ = { id: Date.now(), type, difficulty, question, options: rawOpts, correct };
                 list.push(newQ);
                 if (correct !== 0) processQuizSettlement(newQ);
             }
@@ -954,8 +1183,16 @@
             }
 
             const isGK = quiz.type === 'GK';
-            const pos = isGK ? 5 : 10;
-            const neg = 1;
+            const diff = quiz.difficulty || 'EASY';
+
+            let pos = 5, neg = 1;
+            if (isGK) {
+                if (diff === 'EASY') { pos = 3; neg = 1; }
+                else if (diff === 'MEDIUM') { pos = 4; neg = 1; }
+                else if (diff === 'HARD') { pos = 5; neg = 0; }
+            } else {
+                pos = 10; neg = 1;
+            }
 
             if (chosenOpt === quiz.correct) {
                 currentUser.stars = (currentUser.stars || 0) + pos;
@@ -979,8 +1216,16 @@
                 if (ans && !localStorage.getItem(scoredKey)) {
                     const chosen = parseInt(ans);
                     const isGK = quiz.type === 'GK';
-                    const pos = isGK ? 5 : 10;
-                    const neg = 1;
+                    const diff = quiz.difficulty || 'EASY';
+
+                    let pos = 5, neg = 1;
+                    if (isGK) {
+                        if (diff === 'EASY') { pos = 3; neg = 1; }
+                        else if (diff === 'MEDIUM') { pos = 4; neg = 1; }
+                        else if (diff === 'HARD') { pos = 5; neg = 0; }
+                    } else {
+                        pos = 10; neg = 1;
+                    }
 
                     if (chosen === quiz.correct) {
                         u.stars = (u.stars || 0) + pos;
@@ -993,7 +1238,202 @@
             localStorage.setItem('pzx_users_list', JSON.stringify(users));
         }
 
-        /* ---------------- LOGS TRACKER ---------------- */
+        /* ---------------- MATCHES & CATEGORIES SYSTEM ---------------- */
+        function handleAddPostMatch(e) {
+            e.preventDefault();
+            const match = {
+                id: Date.now(),
+                category: document.getElementById('pm-category').value.trim(),
+                team1: document.getElementById('pm-team1').value,
+                team2: document.getElementById('pm-team2').value,
+                toss: document.getElementById('pm-toss').value,
+                winner: document.getElementById('pm-match-winner').value,
+                potm: document.getElementById('pm-potm').value,
+                margin: document.getElementById('pm-margin').value
+            };
+            matches.unshift(match);
+            localStorage.setItem('pzx_matches', JSON.stringify(matches));
+            e.target.reset();
+            renderMatches();
+            renderAdminPanels();
+            alert("Post Match Summary posted!");
+        }
+
+        function renderMatches() {
+            matches = JSON.parse(localStorage.getItem('pzx_matches')) || [];
+            const searchKeyword = document.getElementById('matches-search') ? document.getElementById('matches-search').value.toLowerCase().trim() : '';
+            const host = document.getElementById('matches-view-host');
+
+            let filtered = matches.filter(m => {
+                const matchString = `${m.category || ''} ${m.team1} ${m.team2} ${m.winner} ${m.potm}`.toLowerCase();
+                return matchString.includes(searchKeyword);
+            });
+
+            if (!host) return;
+
+            if (activeMatchCategory) {
+                const categoryMatches = filtered.filter(m => (m.category || 'General').toLowerCase() === activeMatchCategory.toLowerCase());
+                let html = `
+                    <div style="display:flex; align-items:center; gap:1rem; margin-bottom:1rem;">
+                        <button onclick="activeMatchCategory=null; renderMatches();" class="btn btn-sm">← Back to Categories</button>
+                        <h3 style="margin:0;">Category: ${activeMatchCategory}</h3>
+                    </div>`;
+
+                if (categoryMatches.length === 0) {
+                    html += `<p style="color:var(--text-sub);">No match summaries found in this category.</p>`;
+                } else {
+                    categoryMatches.forEach(m => {
+                        html += `
+                            <div class="card">
+                                <h3>${m.team1} vs ${m.team2}</h3>
+                                <p><b>🏆 Winner:</b> ${m.winner} (Won by ${m.margin})</p>
+                                <p><b>🪙 Toss Winner:</b> ${m.toss}</p>
+                                <p><b>⭐ Player of the Match:</b> ${m.potm}</p>
+                            </div>`;
+                    });
+                }
+                host.innerHTML = html;
+                return;
+            }
+
+            const categoriesMap = {};
+            filtered.forEach(m => {
+                const cat = m.category && m.category.trim() !== '' ? m.category : 'General Updates';
+                categoriesMap[cat] = (categoriesMap[cat] || 0) + 1;
+            });
+
+            const categories = Object.keys(categoriesMap);
+            if (categories.length === 0) {
+                host.innerHTML = '<p style="color:var(--text-sub);">No match categories published.</p>';
+                return;
+            }
+
+            let categoriesHTML = '';
+            categories.forEach(cat => {
+                categoriesHTML += `
+                    <div class="category-card" onclick="activeMatchCategory='${cat}'; renderMatches();">
+                        <div>
+                            <h3 style="margin:0; color:var(--accent);">${cat}</h3>
+                            <span style="font-size:0.85rem; color:var(--text-sub);">${categoriesMap[cat]} Match Summary(s)</span>
+                        </div>
+                        <span style="font-size:1.2rem; color:var(--accent);">→</span>
+                    </div>`;
+            });
+            host.innerHTML = categoriesHTML;
+        }
+
+        /* ---------------- BOTTOM STRIP & COMMUNITY ---------------- */
+        function triggerStripFileUpload() {
+            document.getElementById('strip-file-input').click();
+        }
+
+        function handleStripFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    pendingStripImage = evt.target.result;
+                    alert("📷 Image attached! Click submit or hit Enter to post.");
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleStripKeyPress(e) {
+            if (e.key === 'Enter') submitStripPost();
+        }
+
+        function submitStripPost() {
+            const input = document.getElementById('strip-text-input');
+            const text = input.value.trim();
+            if (!text && !pendingStripImage) return;
+
+            savePost(text, pendingStripImage);
+            input.value = '';
+            pendingStripImage = "";
+            document.getElementById('strip-file-input').value = '';
+        }
+
+        function savePost(text, image) {
+            const newPost = {
+                id: Date.now(),
+                author: currentUser.username,
+                authorEmail: currentUser.email,
+                avatar: currentUser.avatar,
+                text: text,
+                image: image,
+                date: new Date().toLocaleDateString()
+            };
+            posts.unshift(newPost);
+            localStorage.setItem('pzx_posts', JSON.stringify(posts));
+            renderCommunity();
+        }
+
+        function deletePost(postId) {
+            if (!confirm("Are you sure you want to delete this post?")) return;
+            posts = posts.filter(p => String(p.id) !== String(postId));
+            localStorage.setItem('pzx_posts', JSON.stringify(posts));
+            renderCommunity();
+        }
+
+        function renderCommunity() {
+            const feed = document.getElementById('community-feed');
+            feed.innerHTML = posts.length ? '' : '<p style="color:var(--text-sub);">No community posts yet.</p>';
+            posts.forEach(p => {
+                const avatar = p.avatar ? `<img src="${p.avatar}">` : p.author.charAt(0);
+                const isMyPost = currentUser && p.authorEmail && p.authorEmail.toLowerCase() === currentUser.email.toLowerCase();
+                
+                feed.innerHTML += `
+                    <div class="card">
+                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.8rem;">
+                            <div style="display:flex; align-items:center; gap:0.6rem;">
+                                <div class="avatar-circle">${avatar}</div>
+                                <div>
+                                    <b>${p.author}</b>
+                                    <div style="font-size:0.75rem; color:var(--text-sub);">${p.date}</div>
+                                </div>
+                            </div>
+                            ${isMyPost ? `<button onclick="deletePost(${p.id})" class="btn btn-sm btn-danger">🗑️ Delete</button>` : ''}
+                        </div>
+                        <p style="white-space: pre-wrap;">${formatBoldText(p.text)}</p>
+                        ${p.image ? `<img src="${p.image}" class="post-img">` : ''}
+                    </div>`;
+            });
+        }
+
+        /* ---------------- MORE INFO SCREEN & CONFIGURATION ---------------- */
+        function handleSaveInfoConfig(e) {
+            e.preventDefault();
+            appConfig = {
+                appName: document.getElementById('cfg-app-name').value.trim(),
+                appLogo: document.getElementById('cfg-app-logo').value.trim(),
+                accountName: document.getElementById('cfg-account-name').value.trim()
+            };
+            localStorage.setItem('pzx_app_config', JSON.stringify(appConfig));
+            renderMoreInfoConfig();
+            alert("App Info Settings updated successfully!");
+        }
+
+        function renderMoreInfoConfig() {
+            appConfig = JSON.parse(localStorage.getItem('pzx_app_config')) || appConfig;
+            document.getElementById('info-app-name').innerText = appConfig.appName || "PZX Arena - Pitch-Zen-Xplosive";
+            document.getElementById('info-account-name').innerText = `Managed by ${appConfig.accountName || 'Vasudev'}`;
+            
+            const logoEl = document.getElementById('info-app-logo');
+            if (appConfig.appLogo) {
+                logoEl.innerHTML = `<img src="${appConfig.appLogo}">`;
+            } else {
+                logoEl.innerHTML = "PZX";
+            }
+
+            if (currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                document.getElementById('cfg-app-name').value = appConfig.appName || "";
+                document.getElementById('cfg-app-logo').value = appConfig.appLogo || "";
+                document.getElementById('cfg-account-name').value = appConfig.accountName || "";
+            }
+        }
+
+        /* ---------------- LOGS TRACKER & ADMIN ---------------- */
         function renderQuizAttemptsLog() {
             const filterVal = document.getElementById('admin-activity-filter').value;
             const container = document.getElementById('admin-activity-log-list');
@@ -1062,6 +1502,7 @@
 
             document.getElementById('quiz-edit-id').value = q.id;
             document.getElementById('quiz-type').value = q.type;
+            document.getElementById('quiz-difficulty').value = q.difficulty || 'EASY';
             document.getElementById('quiz-question').value = q.question;
             document.getElementById('quiz-opt1').value = q.options[0] || '';
             document.getElementById('quiz-opt2').value = q.options[1] || '';
@@ -1074,6 +1515,8 @@
 
         function resetQuizForm() {
             document.getElementById('quiz-edit-id').value = '';
+            document.getElementById('quiz-type').value = 'GK';
+            document.getElementById('quiz-difficulty').value = 'EASY';
             document.getElementById('quiz-question').value = '';
             document.getElementById('quiz-opt1').value = '';
             document.getElementById('quiz-opt2').value = '';
@@ -1136,108 +1579,11 @@
             localStorage.setItem('pzx_user', JSON.stringify(currentUser));
         }
 
-        function handleCreatePost(e) {
-            e.preventDefault();
-            const text = document.getElementById('post-text').value;
-            const urlImg = document.getElementById('post-img-url').value.trim();
-            const fileImg = document.getElementById('post-img-file').files[0];
-
-            if (fileImg) {
-                const reader = new FileReader();
-                reader.onload = function(evt) { savePost(text, evt.target.result); };
-                reader.readAsDataURL(fileImg);
-            } else {
-                savePost(text, urlImg);
-            }
-            e.target.reset();
-        }
-
-        function savePost(text, image) {
-            const newPost = {
-                id: Date.now(),
-                author: currentUser.username,
-                authorEmail: currentUser.email,
-                avatar: currentUser.avatar,
-                text: text,
-                image: image,
-                date: new Date().toLocaleDateString()
-            };
-            posts.unshift(newPost);
-            localStorage.setItem('pzx_posts', JSON.stringify(posts));
-            renderCommunity();
-        }
-
-        function deletePost(postId) {
-            if (!confirm("Are you sure you want to delete this post?")) return;
-            posts = posts.filter(p => String(p.id) !== String(postId));
-            localStorage.setItem('pzx_posts', JSON.stringify(posts));
-            renderCommunity();
-        }
-
-        function renderCommunity() {
-            const feed = document.getElementById('community-feed');
-            feed.innerHTML = posts.length ? '' : '<p style="color:var(--text-sub);">No community posts yet.</p>';
-            posts.forEach(p => {
-                const avatar = p.avatar ? `<img src="${p.avatar}">` : p.author.charAt(0);
-                const isMyPost = currentUser && p.authorEmail && p.authorEmail.toLowerCase() === currentUser.email.toLowerCase();
-                
-                feed.innerHTML += `
-                    <div class="card">
-                        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:0.8rem;">
-                            <div style="display:flex; align-items:center; gap:0.6rem;">
-                                <div class="avatar-circle">${avatar}</div>
-                                <div>
-                                    <b>${p.author}</b>
-                                    <div style="font-size:0.75rem; color:var(--text-sub);">${p.date}</div>
-                                </div>
-                            </div>
-                            ${isMyPost ? `<button onclick="deletePost(${p.id})" class="btn btn-sm btn-danger">🗑️ Delete</button>` : ''}
-                        </div>
-                        <p style="white-space: pre-wrap;">${formatBoldText(p.text)}</p>
-                        ${p.image ? `<img src="${p.image}" class="post-img">` : ''}
-                    </div>`;
-            });
-        }
-
-        function handleAddPostMatch(e) {
-            e.preventDefault();
-            const match = {
-                id: Date.now(),
-                team1: document.getElementById('pm-team1').value,
-                team2: document.getElementById('pm-team2').value,
-                toss: document.getElementById('pm-toss').value,
-                winner: document.getElementById('pm-match-winner').value,
-                potm: document.getElementById('pm-potm').value,
-                margin: document.getElementById('pm-margin').value
-            };
-            matches.unshift(match);
-            localStorage.setItem('pzx_matches', JSON.stringify(matches));
-            e.target.reset();
-            renderMatches();
-            renderAdminPanels();
-            alert("Post Match Summary posted!");
-        }
-
         function deleteMatch(id) {
             matches = matches.filter(m => String(m.id) !== String(id));
             localStorage.setItem('pzx_matches', JSON.stringify(matches));
             renderMatches();
             renderAdminPanels();
-        }
-
-        function renderMatches() {
-            matches = JSON.parse(localStorage.getItem('pzx_matches')) || [];
-            const container = document.getElementById('user-matches-list');
-            container.innerHTML = matches.length ? '' : '<p style="color:var(--text-sub);">No match summaries published.</p>';
-            matches.forEach(m => {
-                container.innerHTML += `
-                    <div class="card">
-                        <h3>${m.team1} vs ${m.team2}</h3>
-                        <p><b>🏆 Winner:</b> ${m.winner} (Won by ${m.margin})</p>
-                        <p><b>🪙 Toss Winner:</b> ${m.toss}</p>
-                        <p><b>⭐ Player of the Match:</b> ${m.potm}</p>
-                    </div>`;
-            });
         }
 
         /* ---------------- UPDATES & NEWS MANAGEMENT ---------------- */
@@ -1324,13 +1670,20 @@
 
         function renderUpdates() {
             updates = JSON.parse(localStorage.getItem('pzx_updates')) || [];
+            const searchKeyword = document.getElementById('updates-search') ? document.getElementById('updates-search').value.toLowerCase().trim() : '';
             const container = document.getElementById('user-updates-list');
             const loadMoreBtn = document.getElementById('load-more-updates-btn');
 
             if (!container) return;
-            container.innerHTML = updates.length ? '' : '<p style="color:var(--text-sub);">No cricket updates available.</p>';
+
+            const filteredUpdates = updates.filter(u => {
+                const text = `${u.title || ''} ${u.content || ''} ${u.tags || ''}`.toLowerCase();
+                return text.includes(searchKeyword);
+            });
+
+            container.innerHTML = filteredUpdates.length ? '' : '<p style="color:var(--text-sub);">No cricket updates found.</p>';
             
-            const visibleSlice = updates.slice(0, updatesVisibleCount);
+            const visibleSlice = filteredUpdates.slice(0, updatesVisibleCount);
 
             visibleSlice.forEach((u, idx) => {
                 let tagsHTML = '';
@@ -1356,7 +1709,7 @@
                     </div>`;
             });
 
-            if (updates.length > updatesVisibleCount) {
+            if (filteredUpdates.length > updatesVisibleCount) {
                 loadMoreBtn.style.display = 'block';
             } else {
                 loadMoreBtn.style.display = 'none';
@@ -1472,7 +1825,6 @@
             });
         }
 
-        /* ---------------- ADMIN COLLAPSIBLE TOGGLES ---------------- */
         function toggleAdminListWrapper(wrapperId, btn) {
             const wrapper = document.getElementById(wrapperId);
             if (!wrapper) return;
@@ -1492,7 +1844,7 @@
             if (quizListContainer) {
                 quizListContainer.innerHTML = list.length === 0 ? '<p style="font-size:0.85rem; color:var(--text-sub);">No quizzes created yet.</p>' : list.map(q => `
                     <div class="item-row">
-                        <div><b>[${q.type}]</b> ${q.question}</div>
+                        <div><b>[${q.type} - ${q.difficulty || 'EASY'}]</b> ${q.question}</div>
                         <div class="btn-group">
                             <button onclick="editQuiz(${q.id})" class="btn btn-sm btn-gold">Edit/Set Answer</button>
                             <button onclick="deleteQuiz(${q.id})" class="btn btn-sm btn-danger">Delete</button>
@@ -1506,7 +1858,7 @@
 
             document.getElementById('admin-match-list').innerHTML = matches.map(m => `
                 <div class="item-row">
-                    <div><b>${m.team1} vs ${m.team2}</b></div>
+                    <div><b>[${m.category || 'General'}] ${m.team1} vs ${m.team2}</b></div>
                     <button onclick="deleteMatch(${m.id})" class="btn btn-sm btn-danger">Delete</button>
                 </div>
             `).join('');
@@ -1542,56 +1894,5 @@
             lockApp(); 
         }
     </script>
-    <script type="module">
-  // Import the required Firebase Firestore functions
-  import { 
-    getFirestore, 
-    collection, 
-    query, 
-    where, 
-    getDocs, 
-    doc, 
-    updateDoc, 
-    deleteDoc 
-  } from "https://www.gstatic.com/firebasejs/9.x.x/firebase-firestore.js";
-
-  // Initialize Firestore (make sure 'app' or 'db' is already initialized)
-  const db = getFirestore();
-
-  // Function to reassign quizzes and delete user
-  async function deleteUserAccount(userId) {
-    try {
-      // 1. Find all quizzes created by this user
-      const quizzesRef = collection(db, "quizzes");
-      const q = query(quizzesRef, where("userId", "==", userId));
-      const querySnapshot = await getDocs(q);
-
-      // 2. Loop through each quiz and reassign it
-      const updatePromises = querySnapshot.docs.map(async (docSnapshot) => {
-        const quizDocRef = doc(db, "quizzes", docSnapshot.id);
-        return updateDoc(quizDocRef, {
-          userId: "admin_or_deleted_user",
-          author: "PZX Admin"
-        });
-      });
-
-      // Wait for all quiz updates to complete
-      await Promise.all(updatePromises);
-
-      // 3. Delete the user document from the users collection
-      await deleteDoc(doc(db, "users", userId));
-
-      console.log("Quizzes reassigned and user successfully deleted.");
-    } catch (error) {
-      console.error("Error deleting user account: ", error);
-    }
-  }
-
-  // Example trigger: Attach to a Delete Button click event
-  document.getElementById("deleteAccountBtn").addEventListener("click", () => {
-    const currentUserId = "USER_ID_TO_DELETE"; // Replace with logged-in user's ID
-    deleteUserAccount(currentUserId);
-  });
-</script>
 </body>
 </html>

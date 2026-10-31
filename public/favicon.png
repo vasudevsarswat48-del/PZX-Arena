@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PZX Logo</title>
+
+<style>
+body{
+    margin:0;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+}
+
+svg{
+    width:650px;
+}
+
+.ring{
+    fill:none;
+    stroke:url(#ringGradient);
+    stroke-width:12;
+}
+
+.text{
+    font-family:Arial Black,sans-serif;
+    font-size:180px;
+    font-weight:900;
+    fill:url(#silver);
+    stroke:#111;
+    stroke-width:3;
+    letter-spacing:-12px;
+}
+
+.x{
+    fill:url(#blue);
+    filter:url(#glow);
+}
+
+.slash{
+    fill:url(#blue);
+    filter:url(#glow);
+}
+</style>
+
+</head>
+<body>
+
+<svg viewBox="0 0 900 600">
+
+<defs>
+
+<linearGradient id="silver">
+<stop offset="0%" stop-color="#ffffff"/>
+<stop offset="40%" stop-color="#cfcfcf"/>
+<stop offset="70%" stop-color="#7f7f7f"/>
+<stop offset="100%" stop-color="#efefef"/>
+</linearGradient>
+
+<linearGradient id="blue">
+<stop offset="0%" stop-color="#00eaff"/>
+<stop offset="100%" stop-color="#005dff"/>
+</linearGradient>
+
+<linearGradient id="ringGradient">
+<stop offset="0%" stop-color="#666"/>
+<stop offset="100%" stop-color="#00aaff"/>
+</linearGradient>
+
+<filter id="glow">
+<feGaussianBlur stdDeviation="6" result="coloredBlur"/>
+<feMerge>
+<feMergeNode in="coloredBlur"/>
+<feMergeNode in="SourceGraphic"/>
+</feMerge>
+</filter>
+
+</defs>
+
+<circle cx="450" cy="290" r="220"
+stroke-dasharray="1150 220"
+class="ring"/>
+
+<text x="120" y="360" class="text">PZ</text>
+
+<text x="520" y="360" class="text x">X</text>
+
+<polygon
+class="slash"
+points="
+240,440
+520,180
+550,190
+280,455"/>
+
+</svg>
+
+</body>
+</html>

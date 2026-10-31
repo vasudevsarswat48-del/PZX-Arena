@@ -1,0 +1,260 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========== THEMES ========== */
+/* Light & Dark = full themes. Others = soft pastel (dark text, tinted bg) like TulEra */
+
+:root,
+.light {
+  --bg: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-elevated: #f1f5f9;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #64748b;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-soft: rgba(37, 99, 235, 0.12);
+  --gold: #d97706;
+  --success: #059669;
+  --danger: #dc2626;
+  --header-bg: rgba(255, 255, 255, 0.9);
+  --glow: rgba(37, 99, 235, 0.12);
+  --hero-from: #eff6ff;
+  --hero-to: #f8fafc;
+}
+
+.dark {
+  --bg: #09090b;
+  --bg-card: #18181b;
+  --bg-elevated: #27272a;
+  --border: #3f3f46;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --accent: #60a5fa;
+  --accent-hover: #93c5fd;
+  --accent-soft: rgba(96, 165, 250, 0.15);
+  --gold: #fbbf24;
+  --success: #4ade80;
+  --danger: #f87171;
+  --header-bg: rgba(9, 9, 11, 0.92);
+  --glow: rgba(96, 165, 250, 0.12);
+  --hero-from: #0f172a;
+  --hero-to: #09090b;
+}
+
+/* Soft pastel themes — dark text, light cards, colored wash */
+.ocean {
+  --bg: #e0f2fe;
+  --bg-card: #ffffff;
+  --bg-elevated: #f0f9ff;
+  --border: #bae6fd;
+  --text: #0c4a6e;
+  --text-muted: #0369a1;
+  --accent: #0284c7;
+  --accent-hover: #0369a1;
+  --accent-soft: rgba(2, 132, 199, 0.12);
+  --gold: #d97706;
+  --success: #059669;
+  --danger: #dc2626;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --glow: rgba(2, 132, 199, 0.15);
+  --hero-from: #e0f2fe;
+  --hero-to: #f0f9ff;
+}
+
+.sunset {
+  --bg: #ffedd5;
+  --bg-card: #ffffff;
+  --bg-elevated: #fff7ed;
+  --border: #fed7aa;
+  --text: #7c2d12;
+  --text-muted: #c2410c;
+  --accent: #ea580c;
+  --accent-hover: #c2410c;
+  --accent-soft: rgba(234, 88, 12, 0.12);
+  --gold: #d97706;
+  --success: #059669;
+  --danger: #dc2626;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --glow: rgba(234, 88, 12, 0.15);
+  --hero-from: #ffedd5;
+  --hero-to: #fff7ed;
+}
+
+.forest {
+  --bg: #dcfce7;
+  --bg-card: #ffffff;
+  --bg-elevated: #f0fdf4;
+  --border: #bbf7d0;
+  --text: #14532d;
+  --text-muted: #166534;
+  --accent: #16a34a;
+  --accent-hover: #15803d;
+  --accent-soft: rgba(22, 163, 74, 0.12);
+  --gold: #d97706;
+  --success: #059669;
+  --danger: #dc2626;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --glow: rgba(22, 163, 74, 0.15);
+  --hero-from: #dcfce7;
+  --hero-to: #f0fdf4;
+}
+
+.lavender {
+  --bg: #ede9fe;
+  --bg-card: #ffffff;
+  --bg-elevated: #f5f3ff;
+  --border: #ddd6fe;
+  --text: #4c1d95;
+  --text-muted: #6d28d9;
+  --accent: #7c3aed;
+  --accent-hover: #6d28d9;
+  --accent-soft: rgba(124, 58, 237, 0.12);
+  --gold: #d97706;
+  --success: #059669;
+  --danger: #dc2626;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --glow: rgba(124, 58, 237, 0.15);
+  --hero-from: #ede9fe;
+  --hero-to: #f5f3ff;
+}
+
+.rose {
+  --bg: #ffe4e6;
+  --bg-card: #ffffff;
+  --bg-elevated: #fff1f2;
+  --border: #fecdd3;
+  --text: #881337;
+  --text-muted: #be123c;
+  --accent: #e11d48;
+  --accent-hover: #be123c;
+  --accent-soft: rgba(225, 29, 72, 0.12);
+  --gold: #d97706;
+  --success: #059669;
+  --danger: #dc2626;
+  --header-bg: rgba(255, 255, 255, 0.85);
+  --glow: rgba(225, 29, 72, 0.15);
+  --hero-from: #ffe4e6;
+  --hero-to: #fff1f2;
+}
+
+html, body, #root {
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.35s ease, color 0.25s ease;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border p-5 shadow-sm transition-all duration-200;
+    background-color: var(--bg-card);
+    border-color: var(--border);
+  }
+  .card:hover {
+    box-shadow: 0 8px 28px var(--glow);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5
+           text-sm font-semibold transition-all duration-200
+           focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn text-white;
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+    box-shadow: 0 4px 14px var(--glow);
+  }
+  .btn-primary:hover:not(:disabled) {
+    filter: brightness(1.06);
+    transform: translateY(-1px);
+  }
+
+  .btn-gold {
+    @apply btn text-black font-bold;
+    background: linear-gradient(135deg, #fbbf24, #d97706);
+  }
+
+  .btn-danger {
+    @apply btn text-white;
+    background-color: var(--danger);
+  }
+
+  .btn-ghost {
+    @apply btn;
+    background-color: transparent;
+    color: var(--text-muted);
+  }
+  .btn-ghost:hover {
+    background-color: var(--bg-elevated);
+    color: var(--text);
+  }
+
+  .input {
+    @apply w-full rounded-xl border px-4 py-2.5 outline-none transition text-sm;
+    background-color: var(--bg-elevated);
+    border-color: var(--border);
+    color: var(--text);
+  }
+  .input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-lg px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide;
+  }
+
+  .quiz-option {
+    @apply w-full text-left rounded-xl border px-4 py-3.5 transition-all cursor-pointer text-sm font-medium;
+    background-color: var(--bg-elevated);
+    border-color: var(--border);
+  }
+  .quiz-option:hover:not(.disabled) {
+    border-color: var(--accent);
+    background-color: var(--accent-soft);
+  }
+  .quiz-option.selected {
+    border-color: var(--gold);
+    background-color: color-mix(in srgb, var(--gold) 12%, transparent);
+  }
+  .quiz-option.correct {
+    border-color: var(--success);
+    background-color: color-mix(in srgb, var(--success) 14%, transparent);
+  }
+  .quiz-option.wrong {
+    border-color: var(--danger);
+    background-color: color-mix(in srgb, var(--danger) 12%, transparent);
+  }
+  .quiz-option.disabled { cursor: default; }
+}
+
+.logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.page-title {
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }

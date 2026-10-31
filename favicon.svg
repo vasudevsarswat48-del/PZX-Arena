@@ -1,117 +1,95 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PZX Logo</title>
-
-<!-- Readable Favicon -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2300d8ff'/><text x='50' y='72' font-size='65' font-weight='bold' font-family='Arial' fill='%23000' text-anchor='middle'>P</text></svg>">
-
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    background: radial-gradient(circle at center, #0a192f 0%, #030811 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    overflow: hidden;
-}
-
-.container {
-    width: 100%;
-    max-width: 650px;
-    padding: 20px;
-}
-
-svg {
-    width: 100%;
-    height: auto;
-    filter: drop-shadow(0px 0px 20px rgba(0, 216, 255, 0.25));
-}
-
-.glow-ring {
-    fill: none;
-    stroke: #00d8ff;
-    stroke-width: 8;
-    filter: drop-shadow(0 0 12px #00d8ff) drop-shadow(0 0 25px #0088ff);
-}
-
-.inner-ring {
-    fill: none;
-    stroke: url(#metallicRing);
-    stroke-width: 18;
-    filter: drop-shadow(2px 4px 10px rgba(0,0,0,0.8));
-}
-
-.metallic-text {
-    font-family: 'Arial Black', Impact, sans-serif;
-    font-size: 130px;
-    font-weight: 900;
-    fill: url(#silverGradient);
-    stroke: #1a1a1a;
-    stroke-width: 3;
-    letter-spacing: -4px;
-}
-
-.blue-x {
-    font-family: 'Arial Black', Impact, sans-serif;
-    font-size: 130px;
-    font-weight: 900;
-    fill: url(#blueGradient);
-    stroke: #00e1ff;
-    stroke-width: 2;
-    filter: drop-shadow(0 0 15px rgba(0, 216, 255, 0.8));
-}
-
-.slash {
-    fill: url(#blueGradient);
-    filter: drop-shadow(0 0 15px #00d8ff);
-}
-
-.subtitle {
-    font-family: 'Arial', sans-serif;
-    font-size: 26px;
-    font-weight: 800;
-    fill: #a2c4dd;
-    letter-spacing: 7px;
-}
-</style>
-</head>
-<body>
-
-<div class="container">
-<svg viewBox="0 0 800 800">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="100%" height="100%">
     <defs>
         <!-- Metallic Silver Gradient -->
         <linearGradient id="silverGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%" stop-color="#ffffff"/>
-            <stop offset="30%" stop-color="#e0e0e0"/>
-            <stop offset="50%" stop-color="#8a929a"/>
-            <stop offset="70%" stop-color="#b0b8c0"/>
-            <stop offset="100%" stop-color="#4a525a"/>
+            <stop offset="0%" stop-color="#ffffff" />
+            <stop offset="30%" stop-color="#e0e0e0" />
+            <stop offset="50%" stop-color="#8a929a" />
+            <stop offset="70%" stop-color="#b0b8c0" />
+            <stop offset="100%" stop-color="#4a525a" />
         </linearGradient>
 
         <!-- Electric Blue Gradient -->
         <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#00f0ff"/>
-            <stop offset="50%" stop-color="#0088ff"/>
-            <stop offset="100%" stop-color="#0040a0"/>
+            <stop offset="0%" stop-color="#00f0ff" />
+            <stop offset="50%" stop-color="#0088ff" />
+            <stop offset="100%" stop-color="#0040a0" />
         </linearGradient>
 
         <!-- Ring Metallic Gradient -->
         <linearGradient id="metallicRing" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#606b73"/>
-            <stop offset="50%" stop-color="#2a3036"/>
-            <stop offset="100%" stop-color="#808c96"/>
+            <stop offset="0%" stop-color="#606b73" />
+            <stop offset="50%" stop-color="#2a3036" />
+            <stop offset="100%" stop-color="#808c96" />
         </linearGradient>
+
+        <!-- Glow Filters -->
+        <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="12" result="blur1" />
+            <feGaussianBlur stdDeviation="25" result="blur2" />
+            <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
+
+        <filter id="blueGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="10" result="blur" />
+            <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+            </feMerge>
+        </filter>
     </defs>
+
+    <style>
+        .glow-ring {
+            fill: none;
+            stroke: #00d8ff;
+            stroke-width: 8;
+            filter: url(#neonGlow);
+        }
+
+        .inner-ring {
+            fill: none;
+            stroke: url(#metallicRing);
+            stroke-width: 18;
+        }
+
+        .metallic-text {
+            font-family: 'Arial Black', Impact, sans-serif;
+            font-size: 130px;
+            font-weight: 900;
+            fill: url(#silverGradient);
+            stroke: #1a1a1a;
+            stroke-width: 3;
+            letter-spacing: -4px;
+        }
+
+        .blue-x {
+            font-family: 'Arial Black', Impact, sans-serif;
+            font-size: 130px;
+            font-weight: 900;
+            fill: url(#blueGradient);
+            stroke: #00e1ff;
+            stroke-width: 2;
+            filter: url(#blueGlow);
+        }
+
+        .slash {
+            fill: url(#blueGradient);
+            filter: url(#blueGlow);
+        }
+
+        .subtitle {
+            font-family: 'Arial', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            fill: #a2c4dd;
+            letter-spacing: 7px;
+        }
+    </style>
 
     <!-- Outer Neon Cyan Ring -->
     <circle cx="400" cy="400" r="340" class="glow-ring" />
@@ -132,7 +110,3 @@ svg {
     <!-- Subtitle Text -->
     <text x="400" y="530" text-anchor="middle" class="subtitle">DYNAMIC PRECISION</text>
 </svg>
-</div>
-
-</body>
-</html>
